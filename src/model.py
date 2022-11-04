@@ -39,7 +39,3 @@ class Action:
     def __init__(self, is_black: bool, location: Coordinate) -> None:
         self.is_black = is_black
         self.location = location
-
-class AI:
-    def find_action(self, game_state: GameState) -> Action:
-        raise NotImplementedError("Method not implemented. Should be implemented in a subclass.")
