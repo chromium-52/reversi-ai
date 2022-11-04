@@ -1,9 +1,5 @@
 from typing import List
 
-class GameState:
-    def __init__(self) -> None:
-        pass
-
 class Board:
     SIZE = 8
 
@@ -12,6 +8,15 @@ class Board:
 
     def __init__(self, grid: List[List[int]]) -> None:
         self.grid = grid
+
+class GameState:
+    def __init__(self) -> None:
+        self.board = None
+        self.is_player_one = True
+
+    def __init__(self, board: Board) -> None:
+        self.board = board
+        self.is_player_one = True
 
 class Coordinate:
     def __init__(self, row_index: int, col_index: int) -> None:
