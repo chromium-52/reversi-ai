@@ -15,30 +15,22 @@ class State:
     # If board is None, creates a board for a new game
     def __init__(self, board: List[List[int]] = None) -> None:
         if board is None:
-            self.initState()
+            self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
+
+            self.board[3][3] = self.WHITE
+            self.board[3][4] = self.BLACK
+            self.board[4][3] = self.BLACK
+            self.board[4][4] = self.WHITE
+
+            self.numDisks = 4
         else:
-            self.initState(board)
-    
-    # Initializes the board to the default Reversi starting board
-    def initState(self) -> None:
-        self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
+            self.board = board
 
-        self.board[3][3] = self.WHITE
-        self.board[3][4] = self.BLACK
-        self.board[4][3] = self.BLACK
-        self.board[4][4] = self.WHITE
-
-        self.numDisks = 4
-
-    # Initializes the board to any board state
-    def initState(self, board: List[List[int]]) -> None:
-        self.board = board
-
-        self.numDisks = 0
-        for row in board:
-            for cell in row:
-                if cell != 0:
-                    self.numDisks += 1
+            self.numDisks = 0
+            for row in board:
+                for cell in row:
+                    if cell != 0:
+                        self.numDisks += 1
 
     # Returns the integer corresponding to whose turn it is
     def turn(self) -> int:
@@ -67,6 +59,8 @@ class State:
     
     # Returns true if the game is over
     def gameOver(self) -> bool:
+        if self.numDisks == self.SIZE * self.SIZE:
+            return True
 
         #function body
 
