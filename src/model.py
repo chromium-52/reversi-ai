@@ -1,5 +1,5 @@
-from typing import List, Tuple
 from __future__ import annotations
+from typing import List, Tuple
 
 class State:
     SIZE = 8
@@ -8,7 +8,7 @@ class State:
     BLACK = 1
     WHITE = 2
 
-    # 
+    # Default constructor that creates a board for a new game of Reversi
     def __init__(self) -> None:
         self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
         self.board[3][3] = self.WHITE
@@ -18,15 +18,15 @@ class State:
 
         self.numDisks = 4
 
-    # 
-    def __init__(self, board: List[List[int]]) -> None:
-        self.board = board
+    # # Constructor that consumes a reversi board
+    # def __init__(self, board: List[List[int]]) -> None:
+    #     self.board = board
 
-        self.numDisks = 0
-        for row in board:
-            for cell in row:
-                if cell != 0:
-                    self.numDisks += 1
+    #     self.numDisks = 0
+    #     for row in board:
+    #         for cell in row:
+    #             if cell != 0:
+    #                 self.numDisks += 1
     
     # 
     def turn(self) -> int:
@@ -62,11 +62,22 @@ class State:
     
     # Returns a string representation of the board
     def __str__(self) -> str:
+        boardString = ""
 
-        # function body
+        for row in self.board:
+            for cell in row:
+                if cell == self.EMPTY:
+                    boardString += "0"
+                if cell == self.BLACK:
+                    boardString += "1"
+                if cell == self.WHITE:
+                    boardString += "2"
+                boardString += " "
+            boardString += "\n"
 
-        return None
+        return boardString
 
-class Action:    
+# An action in the state tree for the game, which contains
+class Action:
     def __init__(self, position: Tuple(int, int)) -> None:
         self.position = position
