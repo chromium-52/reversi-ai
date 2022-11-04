@@ -11,12 +11,16 @@ class Board:
 
 class GameState:
     def __init__(self) -> None:
-        self.board = None
+        self.board = Board()
         self.is_player_one = True
 
     def __init__(self, board: Board) -> None:
         self.board = board
         self.is_player_one = True
+
+    def __init__(self, board: Board, is_player_one: bool) -> None:
+        self.board = board
+        self.is_player_one = is_player_one
 
 class Coordinate:
     def __init__(self, row_index: int, col_index: int) -> None:
