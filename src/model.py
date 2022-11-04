@@ -9,25 +9,26 @@ class State:
     WHITE = 2
 
     # Default constructor that creates a board for a new game of Reversi
-    def __init__(self) -> None:
-        self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
-        self.board[3][3] = self.WHITE
-        self.board[3][4] = self.BLACK
-        self.board[4][3] = self.BLACK
-        self.board[4][4] = self.WHITE
+    def __init__(self, board: List[List[int]] = None) -> None:
+        if board is None:
+            self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
 
-        self.numDisks = 4
+            self.board[3][3] = self.WHITE
+            self.board[3][4] = self.BLACK
+            self.board[4][3] = self.BLACK
+            self.board[4][4] = self.WHITE
 
-    # # Constructor that consumes a reversi board
-    # def __init__(self, board: List[List[int]]) -> None:
-    #     self.board = board
+            self.numDisks = 4
+            return
 
-    #     self.numDisks = 0
-    #     for row in board:
-    #         for cell in row:
-    #             if cell != 0:
-    #                 self.numDisks += 1
-    
+        self.board = board
+
+        self.numDisks = 0
+        for row in board:
+            for cell in row:
+                if cell != 0:
+                    self.numDisks += 1
+
     # 
     def turn(self) -> int:
         return self.numDisks % 2 + 1

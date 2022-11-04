@@ -1,4 +1,4 @@
-from src.model import GameState, Action
+from model import GameState, Action
 
 class AI: # interface
     def find_action(self, game_state: GameState) -> Action:
