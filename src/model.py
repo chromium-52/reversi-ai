@@ -1,45 +1,72 @@
-from typing import List
+from typing import List, Tuple
+from __future__ import annotations
 
-class Board:
+class State:
     SIZE = 8
 
     EMPTY = 0
     BLACK = 1
     WHITE = 2
 
+    # 
     def __init__(self) -> None:
-        self.grid = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
-        self.grid[3][3] = self.WHITE
-        self.grid[3][4] = self.BLACK
-        self.grid[4][3] = self.BLACK
-        self.grid[4][4] = self.WHITE
+        self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
+        self.board[3][3] = self.WHITE
+        self.board[3][4] = self.BLACK
+        self.board[4][3] = self.BLACK
+        self.board[4][4] = self.WHITE
 
-    def __init__(self, grid: List[List[int]]) -> None:
-        self.grid = grid
+        self.numDisks = 4
 
-class GameState:
-    def __init__(self) -> None:
-        self.board = Board()
-        self.is_black = True
-
-    def __init__(self, board: Board) -> None:
+    # 
+    def __init__(self, board: List[List[int]]) -> None:
         self.board = board
-        self.is_black = True
 
-    def __init__(self, board: Board, is_black: bool) -> None:
-        self.board = board
-        self.is_black = is_black
+        self.numDisks = 0
+        for row in board:
+            for cell in row:
+                if cell != 0:
+                    self.numDisks += 1
+    
+    # 
+    def turn(self) -> int:
+        return self.numDisks % 2 + 1
+    
+    # Places the disk on the board if the move is valid and returns the resulting state
+    # If the move is not valid, the current state is returned
+    def placeDisk(self, action: Action) -> State:
+        if self.validateMove():
+            return self
 
-class Coordinate:
-    def __init__(self, row_index: int, col_index: int) -> None:
-        self.row_index = row_index
-        self.col_index = col_index
+        # function body
+
+        self.numDisks += 1
+
+        return None
+    
+    # Returns false if the move requested is not valid
+    def validateMove(self, action: Action) -> bool:
+        if self.gameOver():
+            return False
+        
+        # function body
+
+        return None
+    
+    # Returns true if the game is over
+    def gameOver(self) -> bool:
+
+        #function body
+
+        return None
+    
+    # Returns a string representation of the board
+    def __str__(self) -> str:
+
+        # function body
+
+        return None
 
 class Action:    
-    def __init__(self, is_black: bool, location: Coordinate) -> None:
-        self.is_black = is_black
-        self.location = location
-
-class AI:
-    def find_action(self, game_state: GameState) -> Action:
-        raise NotImplementedError("Method not implemented. Should be implemented in a subclass.")
+    def __init__(self, position: Tuple(int, int)) -> None:
+        self.position = position
