@@ -3,8 +3,16 @@ from typing import List
 class Board:
     SIZE = 8
 
+    EMPTY = 0
+    BLACK = 1
+    WHITE = 2
+
     def __init__(self) -> None:
         self.grid = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
+        self.grid[3][3] = self.WHITE
+        self.grid[3][4] = self.BLACK
+        self.grid[4][3] = self.BLACK
+        self.grid[4][4] = self.WHITE
 
     def __init__(self, grid: List[List[int]]) -> None:
         self.grid = grid
