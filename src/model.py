@@ -20,15 +20,15 @@ class Board:
 class GameState:
     def __init__(self) -> None:
         self.board = Board()
-        self.is_player_one = True
+        self.is_black = True
 
     def __init__(self, board: Board) -> None:
         self.board = board
-        self.is_player_one = True
+        self.is_black = True
 
-    def __init__(self, board: Board, is_player_one: bool) -> None:
+    def __init__(self, board: Board, is_black: bool) -> None:
         self.board = board
-        self.is_player_one = is_player_one
+        self.is_black = is_black
 
 class Coordinate:
     def __init__(self, row_index: int, col_index: int) -> None:
@@ -36,6 +36,6 @@ class Coordinate:
         self.col_index = col_index
 
 class Action:    
-    def __init__(self, is_player_one: bool, location: Coordinate) -> None:
-        self.is_player_one = is_player_one
+    def __init__(self, is_black: bool, location: Coordinate) -> None:
+        self.is_black = is_black
         self.location = location
