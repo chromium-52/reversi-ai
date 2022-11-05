@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List, Tuple
 
-# A Reversi move corrresponding to placing a disk on the cell at the coordinates
+# A Reversi move corresponding to placing a disk on the cell at the coordinates
 Action = Tuple[int, int]
 
 # A complete Reversi game state
