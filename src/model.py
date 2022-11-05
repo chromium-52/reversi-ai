@@ -1,6 +1,9 @@
 from __future__ import annotations
 from typing import List, Tuple
 
+# A Reversi move corrresponding to placing a disk on the cell at the coordinates
+Action = Tuple[int, int]
+
 # A complete Reversi game state
 class State:
     # The row and column dimension of the board for this game
@@ -39,7 +42,7 @@ class State:
     # Places the disk on the board if the move is valid and returns the resulting state
     # If the move is not valid, the current state is returned
     def placeDisk(self, action: Action) -> State:
-        if not self.validateMove():
+        if not self.isValidMove():
             return self
 
         # function body
@@ -49,22 +52,26 @@ class State:
         return None
     
     # Returns false if the move requested is not valid
-    def validateMove(self, action: Action) -> bool:
-        if self.gameOver():
-            return False
+    def isValidMove(self, action: Action) -> bool:
         
         # function body
 
         return None
     
+    # Returns the list of valid actions from this Reversi state
+    def validMoves(self) -> List[Action]:
+        if self.numDisks == self.SIZE * self.SIZE:
+            return []
+        
+        moves = [(row, col) for row in range(self.SIZE) for col in range(self.SIZE)]
+
+        moves = list(filter(self.isValidMove, moves))
+
+        return moves
+    
     # Returns true if the game is over
     def gameOver(self) -> bool:
-        if self.numDisks == self.SIZE * self.SIZE:
-            return True
-
-        #function body
-
-        return None
+        return len(self.validMoves()) == 0
     
     # Returns a string representation of the board
     def __str__(self) -> str:
@@ -82,8 +89,3 @@ class State:
             boardString += "\n"
 
         return boardString
-
-# An action in the state tree for the game, which contains
-class Action:
-    def __init__(self, position: Tuple(int, int)) -> None:
-        self.position = position
