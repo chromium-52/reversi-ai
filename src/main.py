@@ -37,12 +37,6 @@ def start_game() -> None:
         print("Black wins!")
     else:
         print("White wins!")
-    
-def sandbox() -> None:
-    state = State()
-
-    print(state.validMoveDirections((3, 2)))
 
 if __name__ == '__main__':
     start_game()
-    #sandbox()
