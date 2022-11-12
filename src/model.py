@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import List, Tuple
 
-# A Reversi move corresponding to placing a disk on the cell at the coordinates
-Action = Tuple[int, int]
+# A 0-indexed row, column coordinate pair on a Reversi board
+Coordinate = Tuple[int, int]
 
 # A complete Reversi game state
 class State:
@@ -24,29 +24,39 @@ class State:
             self.board[3][4] = self.BLACK
             self.board[4][3] = self.BLACK
             self.board[4][4] = self.WHITE
-
-            self.blackDisks = 2
-            self.whiteDisks = 2
         else:
             self.board = board
+    
+    # Returns the number of black disks on the board
+    def black_disks(self) -> int:
+        black_disks = 0
 
-            self.blackDisks = 0
-            self.whiteDisks = 0
-            for row in board:
-                for cell in row:
-                    if cell == self.BLACK:
-                        self.blackDisks += 1
-                    if cell == self.WHITE:
-                        self.whiteDisks += 1
+        for row in self.board:
+            for cell in row:
+                if cell == self.BLACK:
+                    black_disks += 1
+        
+        return black_disks
+
+    # Returns the number of white disks on the board
+    def white_disks(self) -> int:
+        white_disks = 0
+
+        for row in self.board:
+            for cell in row:
+                if cell == self.WHITE:
+                    white_disks += 1
+        
+        return white_disks
 
     # Returns the integer corresponding to whose turn it is
     def turn(self) -> int:
-        return (self.blackDisks + self.whiteDisks) % 2 + 1
+        return (self.black_disks() + self.white_disks()) % 2 + 1
     
     # Places the disk on the board if the move is valid and returns the resulting state
     # If the move is not valid, the current state is returned
-    def placeDisk(self, action: Action) -> State:
-        if not self.isValidMove(action):
+    def place_disk(self, action: Coordinate) -> State:
+        if not self.is_valid_move(action):
             return self
         
         turn = self.turn()
@@ -54,127 +64,127 @@ class State:
         board = [[self.board[row][col] for col in range(self.SIZE)] for row in range(self.SIZE)]
 
         row = action[0]
-        col = action[1]
+        column = action[1]
 
-        board[row][col] = turn
+        board[row][column] = turn
 
-        directions = self.validMoveDirections(action)
+        directions = self.valid_move_directions(action)
 
         for direction in directions:
-            rowDelta = direction[0]
-            colDelta = direction[1]
+            row_delta = direction[0]
+            column_delta = direction[1]
 
-            newRow = row + rowDelta
-            newCol = col + colDelta
+            new_row = row + row_delta
+            new_column = column + column_delta
 
-            while board[newRow][newCol] == turn % 2 + 1:
-                board[newRow][newCol] = turn
+            while board[new_row][new_column] == turn % 2 + 1:
+                board[new_row][new_column] = turn
 
-                newRow += rowDelta
-                newCol += colDelta
+                new_row += row_delta
+                new_column += column_delta
 
         return State(board)
     
     # Returns false if the move requested is not valid
-    def isValidMove(self, action: Action) -> bool:
+    def is_valid_move(self, action: Coordinate) -> bool:
         row = action[0]
-        col = action[1]
+        column = action[1]
 
-        if row < 0 or row >= self.SIZE or col < 0 or col >= self.SIZE:
+        if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
             return False
 
-        return len(self.validMoveDirections(action)) != 0
+        return len(self.valid_move_directions(action)) != 0
     
     # Returns the list of directions in which disks can be flipped
-    def validMoveDirections(self, action: Action) -> List[Action]:
+    def valid_move_directions(self, action: Coordinate) -> List[Coordinate]:
         row = action[0]
-        col = action[1]
+        column = action[1]
 
-        if self.board[row][col] != 0:
+        if self.board[row][column] != 0:
             return []
 
         directions = [(row, col) for row in range(-1, 2) for col in range(-1, 2)]
         
-        directions = list(filter(lambda direction : self.isValidMoveDirection(action, direction), directions))
+        directions = list(filter(lambda direction : self.is_valid_move_direction(action, direction), directions))
 
         return directions
 
     # Returns whether disks can be flipped in a certain direction
-    def isValidMoveDirection(self, action: Action, direction: Action) -> bool:
-        rowDelta = direction[0]
-        colDelta = direction[1]
+    def is_valid_move_direction(self, action: Coordinate, direction: Coordinate) -> bool:
+        row_delta = direction[0]
+        column_delta = direction[1]
 
-        if rowDelta == 0 and colDelta == 0:
+        if row_delta == 0 and column_delta == 0:
             return False
         
         turn = self.turn()
         
         row = action[0]
-        col = action[1]
+        column = action[1]
 
-        row += rowDelta
-        col += colDelta
+        row += row_delta
+        column += column_delta
 
-        if row < 0 or row >= self.SIZE or col < 0 or col >= self.SIZE:
+        if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
             return False
-        if self.board[row][col] != turn % 2 + 1:
+        if self.board[row][column] != turn % 2 + 1:
             return False
         
-        row += rowDelta
-        col += colDelta
+        row += row_delta
+        column += column_delta
 
-        if row < 0 or row >= self.SIZE or col < 0 or col >= self.SIZE:
+        if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
             return False
 
-        while self.board[row][col] != turn:
-            if self.board[row][col] != turn % 2 + 1:
+        while self.board[row][column] != turn:
+            if self.board[row][column] != turn % 2 + 1:
                 return False
 
-            row += rowDelta
-            col += colDelta
+            row += row_delta
+            column += column_delta
 
-            if row < 0 or row >= self.SIZE or col < 0 or col >= self.SIZE:
+            if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
                 return False
         
         return True
     
     # Returns the list of valid actions from this Reversi state
-    def validMoves(self) -> List[Action]:
-        if self.blackDisks + self.whiteDisks == self.SIZE * self.SIZE:
+    def valid_moves(self) -> List[Coordinate]:
+        if self.black_disks() + self.white_disks() == self.SIZE * self.SIZE:
             return []
         
         moves = [(row, col) for row in range(self.SIZE) for col in range(self.SIZE)]
 
-        moves = list(filter(self.isValidMove, moves))
+        moves = list(filter(self.is_valid_move, moves))
 
         return moves
     
     # Returns true if the game is over
-    def gameOver(self) -> bool:
-        return len(self.validMoves()) == 0
+    def game_over(self) -> bool:
+        return len(self.valid_moves()) == 0
 
     # Returns the integer representation of the player who is winning
     # Returns 0 if the game is tied
     def winner(self) -> int:
-        if self.blackDisks > self.whiteDisks:
+        if self.black_disks() > self.white_disks():
             return self.BLACK
-        if self.whiteDisks > self.blackDisks:
+        if self.white_disks() > self.black_disks():
             return self.WHITE
         return self.EMPTY
     
     # Returns a string representation of the board
     def __str__(self) -> str:
-        boardString = ""
+        board_string = ""
 
         for row in self.board:
             for cell in row:
                 if cell == self.EMPTY:
-                    boardString += "0"
+                    board_string += "0"
                 if cell == self.BLACK:
-                    boardString += "1"
+                    board_string += "1"
                 if cell == self.WHITE:
-                    boardString += "2"
-                boardString += " "
-            boardString += "\n"
+                    board_string += "2"
+                board_string += " "
+            board_string += "\n"
 
-        return boardString
+        return board_string

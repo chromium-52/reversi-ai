@@ -1,42 +1,77 @@
+from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
 from model import State
 
-def start_game() -> None:
-    print("---------------")
-    print("----Reversi----")
-    print("---------------\n")
+def run_game(black_agent: Agent, white_agent: Agent) -> None:
+    print("*** Reversi ***\n")
 
     state = State()
 
-    while not state.gameOver():
+    while not state.game_over():
         print(state)
-
-        if state.turn() == state.BLACK:
-            print("Black's turn")
-        else:
-            print("White's turn")
 
         move = (-1, -1)
 
-        while not state.isValidMove(move):
-            row = int(input("Move row: "))
-            column = int(input("Move column: "))
-
-            move = (row, column)
-
-            if not state.isValidMove(move):
-                print("Invalid move\n")
+        if state.turn() == state.BLACK:
+            print("Black's turn")
+            move = black_agent.get_action(state)
+        else:
+            print("White's turn")
+            move = white_agent.get_action(state)
         
-        state = state.placeDisk(move)
-
         print()
+        
+        state = state.place_disk(move)
     
     print(state)
     
-    print("\nGame over.")
+    print("Game over.")
     if state.winner == state.BLACK:
         print("Black wins!")
     else:
         print("White wins!")
+    
+def get_opponent_type() -> Agent:
+    agent = None
+
+    while agent is None:
+        choice = input("Which type of opponent would you like to play?\n")
+
+        if choice == "manual":
+            agent = ManualAgent()
+        elif choice == "random":
+            agent = RandomAgent()
+        elif choice == "most disks":
+            agent = MostDisksAgent()
+        else:
+            print("Valid responses are 'manual', 'random', and 'most disks'\n")
+    
+    return agent
 
 if __name__ == '__main__':
-    start_game()
+    print("------------------")
+    print("--- Reversi AI ---")
+    print("------------------\n")
+
+    black_agent = None
+    white_agent = None
+
+    while black_agent is None or white_agent is None:
+        choice = input("Which color would you like to play?\n")
+
+        if choice == "black":
+            black_agent = ManualAgent()
+            print()
+            white_agent = get_opponent_type()
+        elif choice == "white":
+            white_agent = ManualAgent()
+            print()
+            black_agent = get_opponent_type()
+        elif choice == "neither":
+            black_agent = RandomAgent()
+            white_agent = RandomAgent()
+        else:
+            print("Valid responses are 'black' and 'white'\n")
+    
+    print("\n")
+
+    run_game(black_agent, white_agent)
