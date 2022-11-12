@@ -25,7 +25,7 @@ def run_game(black_agent: Agent, white_agent: Agent) -> None:
     print(state)
     
     print("Game over.")
-    if state.winner == state.BLACK:
+    if state.winner() == state.BLACK:
         print("Black wins!")
     else:
         print("White wins!")
