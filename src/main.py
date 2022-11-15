@@ -1,6 +1,7 @@
 from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
 from model import State
 
+# Runs a game of Reversi with the given agents playing black and white
 def run_game(black_agent: Agent, white_agent: Agent) -> None:
     print("*** Reversi ***\n")
 
@@ -29,12 +30,13 @@ def run_game(black_agent: Agent, white_agent: Agent) -> None:
         print("Black wins!")
     else:
         print("White wins!")
-    
+
+# Prompts the user for a type of AI opponent to play against
 def get_opponent_type() -> Agent:
     agent = None
 
     while agent is None:
-        choice = input("Which type of opponent would you like to play?\n")
+        choice = input("\nWhich type of opponent would you like to play against?\n")
 
         if choice == "manual":
             agent = ManualAgent()
@@ -47,6 +49,7 @@ def get_opponent_type() -> Agent:
     
     return agent
 
+# Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
     print("------------------")
     print("--- Reversi AI ---")
@@ -60,15 +63,13 @@ if __name__ == '__main__':
 
         if choice == "black":
             black_agent = ManualAgent()
-            print()
             white_agent = get_opponent_type()
         elif choice == "white":
-            white_agent = ManualAgent()
-            print()
             black_agent = get_opponent_type()
+            white_agent = ManualAgent()
         elif choice == "neither":
-            black_agent = RandomAgent()
-            white_agent = RandomAgent()
+            black_agent = get_opponent_type()
+            white_agent = get_opponent_type()
         else:
             print("Valid responses are 'black' and 'white'\n")
     
