@@ -63,16 +63,14 @@ class State:
         
         board = [[self.board[row][col] for col in range(self.SIZE)] for row in range(self.SIZE)]
 
-        row = action[0]
-        column = action[1]
+        row, column = action
 
         board[row][column] = turn
 
         directions = self.valid_move_directions(action)
 
         for direction in directions:
-            row_delta = direction[0]
-            column_delta = direction[1]
+            row_delta, column_delta = direction
 
             new_row = row + row_delta
             new_column = column + column_delta
@@ -87,45 +85,43 @@ class State:
     
     # Returns false if the move requested is not valid
     def is_valid_move(self, action: Coordinate) -> bool:
-        row = action[0]
-        column = action[1]
+        row, column = action
 
-        if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
+        if not self.is_valid_coordinate(row, column):
             return False
 
         return len(self.valid_move_directions(action)) != 0
     
+    def is_valid_coordinate(self, row_index: int, col_index: int) -> bool:
+        return 0 <= row_index < self.SIZE and 0 <= col_index < self.SIZE
+
     # Returns the list of directions in which disks can be flipped
     def valid_move_directions(self, action: Coordinate) -> List[Coordinate]:
-        row = action[0]
-        column = action[1]
+        row, column = action
 
         if self.board[row][column] != 0:
             return []
 
         directions = [(row, col) for row in range(-1, 2) for col in range(-1, 2)]
-        
-        directions = list(filter(lambda direction : self.is_valid_move_direction(action, direction), directions))
+        directions = [direction for direction in directions if self.is_valid_move_direction(action, direction)]
 
         return directions
 
     # Returns whether disks can be flipped in a certain direction
     def is_valid_move_direction(self, action: Coordinate, direction: Coordinate) -> bool:
-        row_delta = direction[0]
-        column_delta = direction[1]
+        row_delta, column_delta = direction
 
         if row_delta == 0 and column_delta == 0:
             return False
         
         turn = self.turn()
         
-        row = action[0]
-        column = action[1]
+        row, column = action
 
         row += row_delta
         column += column_delta
 
-        if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
+        if not self.is_valid_coordinate(row, column):
             return False
         if self.board[row][column] != turn % 2 + 1:
             return False
@@ -133,7 +129,7 @@ class State:
         row += row_delta
         column += column_delta
 
-        if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
+        if not self.is_valid_coordinate(row, column):
             return False
 
         while self.board[row][column] != turn:
@@ -143,7 +139,7 @@ class State:
             row += row_delta
             column += column_delta
 
-            if row < 0 or row >= self.SIZE or column < 0 or column >= self.SIZE:
+            if not self.is_valid_coordinate(row, column):
                 return False
         
         return True
@@ -154,8 +150,7 @@ class State:
             return []
         
         moves = [(row, col) for row in range(self.SIZE) for col in range(self.SIZE)]
-
-        moves = list(filter(self.is_valid_move, moves))
+        moves = [move for move in moves if self.is_valid_move(move)]
 
         return moves
     

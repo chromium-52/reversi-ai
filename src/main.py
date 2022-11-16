@@ -13,7 +13,7 @@ class Main:
         self.slow = slow
 
     # Runs a game of Reversi with the given agents playing black and white
-    def run_game(self, black_agent: Agent, white_agent: Agent) -> None:
+    def run_game(self) -> None:
         print("------------------")
         print("--- Reversi AI ---")
         print("------------------\n")
@@ -22,8 +22,6 @@ class Main:
 
         while not state.game_over():
             print(state)
-
-            move = (-1, -1)
 
             if state.turn() == state.BLACK:
                 print("Black's turn\n")
