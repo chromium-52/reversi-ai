@@ -12,6 +12,7 @@ class Main:
         self.interactive = interactive
         self.slow = slow
 
+    # Runs a game of Reversi with the given agents playing black and white
     def run_game(self, black_agent: Agent, white_agent: Agent) -> None:
         print("------------------")
         print("--- Reversi AI ---")
@@ -63,6 +64,7 @@ class Util:
         # TODO show usage message if invalid command line args are passed
         pass
 
+# Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Reversi AI')
     agent_choices = ('manual', 'random', 'most_disks')
