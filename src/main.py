@@ -2,6 +2,7 @@ import argparse
 
 from agents import Agent, ManualAgent, RandomAgent, MostDisksAgent
 from model import State
+from time import sleep
 from typing import Optional
 
 class Main:
@@ -31,6 +32,9 @@ class Main:
                 move = white_agent.get_action(state)
             
             state = state.place_disk(move)
+
+            if self.slow:
+                sleep(1) # sleep for 1 second
         
         print(state)
         
@@ -69,7 +73,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--black', choices=agent_choices)
     parser.add_argument('-w', '--white', choices=agent_choices)
     parser.add_argument('-i', '--interactive', action='store_true')
-    parser.add_argument('-s', '--slow')
+    parser.add_argument('-s', '--slow', action='store_true')
 
     args = parser.parse_args()
     black_agent, white_agent = Util.get_agents(args.black, args.white)
