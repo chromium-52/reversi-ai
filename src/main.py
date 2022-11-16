@@ -1,77 +1,77 @@
-from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
+import argparse
+
+from agents import Agent, ManualAgent, RandomAgent, MostDisksAgent
 from model import State
+from typing import Optional
 
-def run_game(black_agent: Agent, white_agent: Agent) -> None:
-    print("*** Reversi ***\n")
+class Main:
+    
+    def __init__(self, black_agent: Agent, white_agent: Agent, interactive: bool, slow: bool) -> None:
+        self.black_agent = black_agent
+        self.white_agent = white_agent
+        self.interactive = interactive
+        self.slow = slow
 
-    state = State()
+    def run_game(self, black_agent: Agent, white_agent: Agent) -> None:
+        print("------------------")
+        print("--- Reversi AI ---")
+        print("------------------\n")
 
-    while not state.game_over():
+        state = State()
+
+        while not state.game_over():
+            print(state)
+
+            move = (-1, -1)
+
+            if state.turn() == state.BLACK:
+                print("Black's turn\n")
+                move = black_agent.get_action(state)
+            else:
+                print("White's turn\n")
+                move = white_agent.get_action(state)
+            
+            state = state.place_disk(move)
+        
         print(state)
-
-        move = (-1, -1)
-
-        if state.turn() == state.BLACK:
-            print("Black's turn")
-            move = black_agent.get_action(state)
-        else:
-            print("White's turn")
-            move = white_agent.get_action(state)
         
-        print()
-        
-        state = state.place_disk(move)
-    
-    print(state)
-    
-    print("Game over.")
-    if state.winner() == state.BLACK:
-        print("Black wins!")
-    else:
-        print("White wins!")
-    
-def get_opponent_type() -> Agent:
-    agent = None
-
-    while agent is None:
-        choice = input("Which type of opponent would you like to play?\n")
-
-        if choice == "manual":
-            agent = ManualAgent()
-        elif choice == "random":
-            agent = RandomAgent()
-        elif choice == "most disks":
-            agent = MostDisksAgent()
+        print("Game over.")
+        if state.winner() == state.BLACK:
+            print("Black wins!")
         else:
-            print("Valid responses are 'manual', 'random', and 'most disks'\n")
-    
-    return agent
+            print("White wins!")
+
+class Util:
+    @staticmethod
+    def get_agents(black_agent_type: Optional[str], white_agent_type: Optional[str]) -> Agent:
+        black_agent = Util.__get_agent_from_type(black_agent_type)
+        white_agent = Util.__get_agent_from_type(white_agent_type)
+
+        return black_agent, white_agent
+
+    @staticmethod
+    def __get_agent_from_type(agent_type: Optional[str]) -> Agent:
+        if agent_type == 'random':
+            return RandomAgent()
+        if agent_type == 'most_disks':
+            return MostDisksAgent()
+        
+        return ManualAgent()
+
+    @staticmethod
+    def show_arg_usage() -> None:
+        # TODO show usage message if invalid command line args are passed
+        pass
 
 if __name__ == '__main__':
-    print("------------------")
-    print("--- Reversi AI ---")
-    print("------------------\n")
+    parser = argparse.ArgumentParser(prog='Reversi AI')
+    agent_choices = ('manual', 'random', 'most_disks')
+    parser.add_argument('-b', '--black', choices=agent_choices)
+    parser.add_argument('-w', '--white', choices=agent_choices)
+    parser.add_argument('-i', '--interactive', action='store_true')
+    parser.add_argument('-s', '--slow')
 
-    black_agent = None
-    white_agent = None
-
-    while black_agent is None or white_agent is None:
-        choice = input("Which color would you like to play?\n")
-
-        if choice == "black":
-            black_agent = ManualAgent()
-            print()
-            white_agent = get_opponent_type()
-        elif choice == "white":
-            white_agent = ManualAgent()
-            print()
-            black_agent = get_opponent_type()
-        elif choice == "neither":
-            black_agent = RandomAgent()
-            white_agent = RandomAgent()
-        else:
-            print("Valid responses are 'black' and 'white'\n")
-    
-    print("\n")
-
-    run_game(black_agent, white_agent)
+    args = parser.parse_args()
+    black_agent, white_agent = Util.get_agents(args.black, args.white)
+    main = Main(black_agent, white_agent, args.interactive, args.slow)
+    main.run_game()

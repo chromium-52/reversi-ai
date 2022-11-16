@@ -5,58 +5,87 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QColor, QPainter, QBrush, QPen
 
 from model import State
+from time import sleep
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 400, 400
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, state: State) -> None:
+    CELL_SIZE = 50
+    DISK_SIZE = 30
+
+    def __init__(self) -> None:
         super().__init__()
         layout = QVBoxLayout()
-        self.label = QLabel()
-        self.label.setContentsMargins(0,0,0,0)
-        self.label.setAlignment(Qt.AlignCenter)
-        self.label.setScaledContents(True)
-        layout.addWidget(self.label)
+        self.board = QLabel()
+        self.board.setContentsMargins(0, 0, 0, 0)
+        self.board.setAlignment(Qt.AlignCenter)
+        self.board.setScaledContents(True)
+        self.board.mousePressEvent = self.handle_board_click
+        layout.addWidget(self.board)
         widget = QWidget()
         widget.setLayout(layout)
         self.setCentralWidget(widget)
-
-        self.draw_board(state)
-
-    def draw_board(self, state: State) -> None:
         _canvas = QPixmap(WINDOW_WIDTH, WINDOW_HEIGHT)
         _canvas.fill(QColor("#197b30")) # dark green
-        self.label.setPixmap(_canvas)
-        painter = QPainter(self.label.pixmap())
-        painter.setPen(QPen(Qt.black, 5, Qt.SolidLine))
+        self.board.setPixmap(_canvas)
+        self.painter = QPainter(self.board.pixmap())
+
+    def draw_board(self, state: State) -> None:
+        self.painter.setPen(QPen(Qt.black, 5, Qt.SolidLine))
 
         dimension = len(state.board)
 
         # draw grid
         for row_index in range(dimension + 1):
-            painter.drawLine(0, row_index * 50, WINDOW_WIDTH, row_index * 50)
+            self.painter.drawLine(0, row_index * self.CELL_SIZE, WINDOW_WIDTH, row_index * self.CELL_SIZE)
         for col_index in range(dimension + 1):
-            painter.drawLine(col_index * 50, 0, col_index * 50, WINDOW_HEIGHT)
+            self.painter.drawLine(col_index * self.CELL_SIZE, 0, col_index * self.CELL_SIZE, WINDOW_HEIGHT)
 
         # draw disks
         for row_index in range(dimension):
             for col_index in range(dimension):
                 cell = state.board[row_index][col_index]
-                if cell == 0:
+                if cell == State.EMPTY:
                     continue
 
-                disk_color = Qt.black if cell == 1 else Qt.white
-                painter.setPen(QPen(disk_color, 8, Qt.SolidLine))
-                painter.setBrush(QBrush(disk_color, Qt.SolidPattern))
-                painter.drawEllipse(row_index * 50 + 10, col_index * 50 + 10, 30, 30)
+                self.draw_disk(row_index, col_index, cell)
 
-        painter.end()
+        print('Repainting')
+        self.repaint()
+        self.update()
+
+    def draw_disk(self, row_index: int, col_index: int, cell: int) -> None:
+        disk_color = Qt.black if cell == State.BLACK else Qt.white
+        self.painter.setPen(QPen(disk_color, 8, Qt.SolidLine))
+        self.painter.setBrush(QBrush(disk_color, Qt.SolidPattern))
+        self.painter.drawEllipse(row_index * self.CELL_SIZE + 10, col_index * self.CELL_SIZE + 10, self.DISK_SIZE, self.DISK_SIZE)
+
+    def handle_board_click(self, event) -> None:
+        position = event.localPos()
+        row_index = int(position.x() // self.CELL_SIZE)
+        col_index = int(position.y() // self.CELL_SIZE)
+        print(row_index, col_index)
+
+    def shutdown(self) -> None:
+        self.painter.end()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MainWindow(State())
+    window = MainWindow()
     window.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
     window.setWindowTitle("Reversi")
+
+    sleep(1)
+    window.draw_board(State())
+
     window.show()
+
+    sleep(1)
+    window.draw_board(State())
+
     app.exec_()
+
+    window.draw_board(State())
+
+    window.shutdown()
