@@ -1,6 +1,7 @@
 import argparse
 
 from agents import Agent, ManualAgent, RandomAgent, MostDisksAgent
+
 from model import State
 from time import sleep
 from typing import Optional
@@ -39,10 +40,13 @@ class Main:
         print(state)
         
         print("Game over.")
-        if state.winner() == state.BLACK:
+        winner = state.winner()
+        if winner == state.BLACK:
             print("Black wins!")
-        else:
+        elif winner == state.WHITE:
             print("White wins!")
+        else:
+            print("The game is tied!")
 
 class Util:
     @staticmethod
