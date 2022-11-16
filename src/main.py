@@ -6,6 +6,12 @@ from model import State
 from time import sleep
 from typing import Optional
 
+AGENT_CHOICES_MAP = {
+    'manual': ManualAgent(),
+    'random': RandomAgent(),
+    'most_disks': MostDisksAgent(),
+}
+
 class Main:
     
     def __init__(self, black_agent: Agent, white_agent: Agent, interactive: bool, slow: bool) -> None:
@@ -51,20 +57,11 @@ class Main:
 class Util:
     @staticmethod
     def get_agents(black_agent_type: Optional[str], white_agent_type: Optional[str]) -> Agent:
-        black_agent = Util.__get_agent_from_type(black_agent_type)
-        white_agent = Util.__get_agent_from_type(white_agent_type)
+        black_agent = AGENT_CHOICES_MAP.get(black_agent_type, ManualAgent())
+        white_agent = AGENT_CHOICES_MAP.get(white_agent_type, ManualAgent())
 
         return black_agent, white_agent
-
-    @staticmethod
-    def __get_agent_from_type(agent_type: Optional[str]) -> Agent:
-        if agent_type == 'random':
-            return RandomAgent()
-        if agent_type == 'most_disks':
-            return MostDisksAgent()
-        
-        return ManualAgent()
-
+    
     @staticmethod
     def show_arg_usage() -> None:
         # TODO show usage message if invalid command line args are passed
@@ -73,9 +70,8 @@ class Util:
 # Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Reversi AI')
-    agent_choices = ('manual', 'random', 'most_disks')
-    parser.add_argument('-b', '--black', choices=agent_choices)
-    parser.add_argument('-w', '--white', choices=agent_choices)
+    parser.add_argument('-b', '--black', choices=AGENT_CHOICES_MAP.keys())
+    parser.add_argument('-w', '--white', choices=AGENT_CHOICES_MAP.keys())
     parser.add_argument('-i', '--interactive', action='store_true')
     parser.add_argument('-s', '--slow', action='store_true')
 
