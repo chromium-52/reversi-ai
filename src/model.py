@@ -1,6 +1,10 @@
 from __future__ import annotations
 from typing import List, Tuple
 
+from constants import RED, BLACK, WHITE, DARK_GREEN, WINDOW_HEIGHT, WINDOW_WIDTH
+
+import pygame
+
 # A 0-indexed row, column coordinate pair on a Reversi board
 Coordinate = Tuple[int, int]
 
@@ -24,10 +28,15 @@ class State:
                [0, 0, 0, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0, 0, 0]]
 
+    # GUI elements
+    CELL_SIZE = 50
+    PADDING = 10
+
     # Creates a new Reversi game state
     # If board is None, creates a board for a new game
-    def __init__(self, board: List[List[int]] = OTHELLO) -> None:
+    def __init__(self, board: List[List[int]] = OTHELLO, window: pygame.display = None) -> None:
         self.board = board
+        self.window = window
     
     # Returns the number of black disks on the board
     def black_disks(self) -> int:
@@ -83,7 +92,7 @@ class State:
                 new_row += row_delta
                 new_column += column_delta
 
-        return State(board)
+        return State(board, window=self.window)
     
     # Returns false if the move requested is not valid
     def is_valid_move(self, action: Coordinate) -> bool:
@@ -185,3 +194,63 @@ class State:
             board_string += "\n"
 
         return board_string
+
+    """ STATIC METHODS """
+    @staticmethod
+    def get_coordinate_from_position(position: Coordinate) -> Coordinate:
+        x_coord, y_coord = position
+        return x_coord // State.CELL_SIZE, y_coord // State.CELL_SIZE
+
+    @staticmethod
+    def get_position_from_coordinate(row_index: int, col_index: int) -> Coordinate:
+        x_coord = row_index * State.CELL_SIZE + State.CELL_SIZE // 2
+        y_coord = col_index * State.CELL_SIZE + State.CELL_SIZE // 2
+        return x_coord, y_coord
+
+    """ PAINT METHODS """
+
+    def repaint(self) -> None:
+        if self.window is None:
+            raise RuntimeError("window is None. This method should not be called in command line mode")
+
+        self.__repaint_board()
+        self.__repaint_valid_moves(self.valid_moves())
+        pygame.display.update()
+
+    def __repaint_board(self) -> None:
+        self.__repaint_background()
+
+        for row in range(State.SIZE):
+            for col in range(State.SIZE):
+                cell = self.board[row][col]
+                self.__repaint_piece(row, col, cell)
+
+    def __repaint_background(self) -> None:
+        self.window.fill(DARK_GREEN)
+
+        for row_index in range(self.SIZE):
+            start_pos = (0, row_index * self.CELL_SIZE)
+            end_pos = (WINDOW_WIDTH, row_index * self.CELL_SIZE)
+            pygame.draw.line(self.window, BLACK, start_pos, end_pos, width=3)
+        for col_index in range(self.SIZE):
+            start_pos = (col_index * self.CELL_SIZE, 0)
+            end_pos = (col_index * self.CELL_SIZE, WINDOW_HEIGHT)
+            pygame.draw.line(self.window, BLACK, start_pos, end_pos, width=3)
+
+    def __repaint_piece(self, row: int, col: int, cell: int) -> None:
+        if cell == 0:
+            return
+
+        radius = (self.CELL_SIZE - 2 * self.PADDING) // 2
+        piece_color = BLACK if cell == State.BLACK else WHITE
+        piece_position = State.get_position_from_coordinate(row, col)
+        pygame.draw.circle(self.window, piece_color, piece_position, radius)
+
+    def __repaint_valid_moves(self, valid_moves: List[Coordinate]) -> None:
+        for row_index, col_index in valid_moves:
+            pygame.draw.circle(
+                self.window,
+                RED,
+                State.get_position_from_coordinate(row_index, col_index),
+                5
+            )

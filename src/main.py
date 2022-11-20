@@ -1,6 +1,8 @@
 import argparse
+import pygame
 
 from agents import Agent, ManualAgent, RandomAgent, MostDisksAgent
+from constants import WINDOW_HEIGHT, WINDOW_WIDTH
 
 from model import State
 from time import sleep
@@ -13,14 +15,20 @@ AGENT_CHOICES_MAP = {
 }
 
 class Main:
-    def __init__(self, black_agent: Agent, white_agent: Agent, interactive: bool, slow: bool):
+    
+    def __init__(self, black_agent: "Agent", white_agent: "Agent", slow: bool) -> None:
         self.black_agent = black_agent
         self.white_agent = white_agent
-        self.interactive = interactive
         self.slow = slow
 
+    def run_game(self, is_interactive: bool) -> None:
+        if is_interactive:
+            self.run_game_gui()
+        else:
+            self.run_game_command_line()
+
     # Runs a game of Reversi with the given agents playing black and white
-    def run_game(self) -> None:
+    def run_game_command_line(self) -> None:
         print("------------------")
         print("--- Reversi AI ---")
         print("------------------\n")
@@ -43,7 +51,10 @@ class Main:
                 sleep(1) # sleep for 1 second
         
         print(state)
+
+        self.end_game_command_line(state)
         
+    def end_game_command_line(self, state: State) -> None:
         print("Game over.")
         winner = state.winner()
         if winner == state.BLACK:
@@ -53,7 +64,45 @@ class Main:
         else:
             print("The game is tied!")
 
-class Util:
+    def run_game_gui(self) -> None:
+        window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        pygame.display.set_caption('Reversi')
+
+        clock = pygame.time.Clock()
+        state = State(window=window)
+
+        while not state.game_over():
+            clock.tick(60) # 60 frames per second
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    position = pygame.mouse.get_pos()
+                    move = State.get_coordinate_from_position(position)
+                    
+                    state = state.place_disk(move)
+
+            state.repaint()
+        
+        self.end_game_gui(state)
+        
+    def end_game_gui(self, state: State) -> None:
+        if not state.game_over():
+            print("Game interrupted")
+
+        print("Game over.")
+        winner = state.winner()
+        if winner == state.BLACK:
+            print("Black wins!")
+        elif winner == state.WHITE:
+            print("White wins!")
+        else:
+            print("The game is tied!")
+
+        pygame.quit()
+
     @staticmethod
     def get_agents(black_agent_type: Optional[str], white_agent_type: Optional[str]) -> Agent:
         black_agent = AGENT_CHOICES_MAP.get(black_agent_type, ManualAgent())
@@ -75,6 +124,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--slow', action='store_true')
 
     args = parser.parse_args()
-    black_agent, white_agent = Util.get_agents(args.black, args.white)
-    main = Main(black_agent, white_agent, args.interactive, args.slow)
-    main.run_game()
+    black_agent, white_agent = Main.get_agents(args.black, args.white)
+    main = Main(black_agent, white_agent, args.slow)
+
+    main.run_game(args.interactive)
