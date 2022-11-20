@@ -75,12 +75,6 @@ class Main:
             clock.tick(60) # 60 frames per second
 
             for event in pygame.event.get():
-            # events = pygame.event.get()
-            # if len(events) == 0:
-            #     continue
-
-            # event = events[0]
-
                 if event.type == pygame.QUIT:
                     return
                 
