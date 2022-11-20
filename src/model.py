@@ -14,18 +14,20 @@ class State:
     BLACK = 1
     WHITE = 2
 
+    # The standard "Othello" initial board state
+    OTHELLO = [[0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 1, 2, 0, 0, 0],
+               [0, 0, 0, 2, 1, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0]]
+
     # Creates a new Reversi game state
     # If board is None, creates a board for a new game
-    def __init__(self, board: List[List[int]] = None) -> None:
-        if board is None:
-            self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
-
-            self.board[3][3] = self.BLACK
-            self.board[3][4] = self.WHITE
-            self.board[4][3] = self.WHITE
-            self.board[4][4] = self.BLACK
-        else:
-            self.board = board
+    def __init__(self, board: List[List[int]] = OTHELLO) -> None:
+        self.board = board
     
     # Returns the number of black disks on the board
     def black_disks(self) -> int:

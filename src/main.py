@@ -13,8 +13,7 @@ AGENT_CHOICES_MAP = {
 }
 
 class Main:
-    
-    def __init__(self, black_agent: Agent, white_agent: Agent, interactive: bool, slow: bool) -> None:
+    def __init__(self, black_agent: Agent, white_agent: Agent, interactive: bool, slow: bool):
         self.black_agent = black_agent
         self.white_agent = white_agent
         self.interactive = interactive
