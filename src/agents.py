@@ -1,5 +1,5 @@
-import random
 from model import Coordinate, State
+import random
 
 # An interface for Reversi AI agents
 class Agent:
@@ -46,8 +46,9 @@ class MostDisksAgent(Agent):
     def evaluate(self, state: State) -> int:
         turn = state.turn()
 
-        if turn == State.BLACK:
-            return state.black_disks()
-        
+        # Mismatched because the turn changes in subsequent states
         if turn == State.WHITE:
+            return state.black_disks()
+
+        if turn == State.BLACK:
             return state.white_disks()

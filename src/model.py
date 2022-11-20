@@ -27,10 +27,10 @@ class State:
         if board is None:
             self.board = [[0 for _ in range(self.SIZE)] for _ in range(self.SIZE)]
 
-            self.board[3][3] = self.WHITE
-            self.board[3][4] = self.BLACK
-            self.board[4][3] = self.BLACK
-            self.board[4][4] = self.WHITE
+            self.board[3][3] = self.BLACK
+            self.board[3][4] = self.WHITE
+            self.board[4][3] = self.WHITE
+            self.board[4][4] = self.BLACK
         else:
             self.board = board
 
