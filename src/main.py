@@ -1,12 +1,11 @@
 import argparse
 import pygame
-
-from agents import Agent, ManualAgent, RandomAgent, MostDisksAgent
-from constants import WINDOW_HEIGHT, WINDOW_WIDTH
-
-from model import State
 from time import sleep
 from typing import Optional
+from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
+from constants import WINDOW_HEIGHT, WINDOW_WIDTH
+from model import State
+
 
 AGENT_CHOICES_MAP = {
     'manual': ManualAgent(),
@@ -15,8 +14,7 @@ AGENT_CHOICES_MAP = {
 }
 
 class Main:
-    
-    def __init__(self, black_agent: "Agent", white_agent: "Agent", slow: bool) -> None:
+    def __init__(self, black_agent: Agent, white_agent: Agent, slow: bool) -> None:
         self.black_agent = black_agent
         self.white_agent = white_agent
         self.slow = slow
@@ -56,13 +54,14 @@ class Main:
         
     def end_game_command_line(self, state: State) -> None:
         print("Game over.")
+
         winner = state.winner()
         if winner == state.BLACK:
             print("Black wins!")
         elif winner == state.WHITE:
             print("White wins!")
         else:
-            print("The game is tied!")
+            print("Tie!")
 
     def run_game_gui(self) -> None:
         window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -117,11 +116,11 @@ class Main:
 
 # Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog='Reversi AI')
-    parser.add_argument('-b', '--black', choices=AGENT_CHOICES_MAP.keys())
-    parser.add_argument('-w', '--white', choices=AGENT_CHOICES_MAP.keys())
-    parser.add_argument('-i', '--interactive', action='store_true')
-    parser.add_argument('-s', '--slow', action='store_true')
+    parser = argparse.ArgumentParser(prog = 'Reversi AI')
+    parser.add_argument('-b', '--black', choices = AGENT_CHOICES_MAP.keys())
+    parser.add_argument('-w', '--white', choices = AGENT_CHOICES_MAP.keys())
+    parser.add_argument('-i', '--interactive', action = 'store_true')
+    parser.add_argument('-s', '--slow', action = 'store_true')
 
     args = parser.parse_args()
     black_agent, white_agent = Main.get_agents(args.black, args.white)

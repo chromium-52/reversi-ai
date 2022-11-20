@@ -1,3 +1,4 @@
+from typing import Tuple
 from agents import Agent
 from model import Coordinate, State
 
@@ -9,11 +10,11 @@ class MinimaxAgent(Agent):
         self.depth = depth
     
     def get_action(self, state: State) -> Coordinate:
-        return self.get_action_helper(state, True, self.depth, -999999, 999999)
+        return self.get_action_helper(state, True, 0, -999999, 999999)[0]
     
-    def get_action_helper(self, state: State, maximize: bool, depth: int, alpha: int, beta: int) -> Coordinate:
+    def get_action_helper(self, state: State, maximize: bool, depth: int, alpha: int, beta: int) -> Tuple[Coordinate, int]:
         if depth == self.depth or state.game_over():
-            return (None, self.evaluate(state))
+            return self.agent.get_action(state), self.evaluate(state)
         
         depth = depth if maximize else depth + 1
         
@@ -28,16 +29,19 @@ class MinimaxAgent(Agent):
                 alpha = max(alpha, max_utility)
                 if alpha > beta:
                     break
-            return (max_action, max_utility)
+            return max_action, max_utility
         else:
             min_utility = 999999
+            min_action = None # Not really necessary to keep track of; will never be returned to the top-level call
             for action in state.valid_moves():
                 successor_utility = self.get_action_helper(state.place_disk(action), not maximize, depth, alpha, beta)[1]
-                min_utility = min(min_utility, successor_utility)
+                if successor_utility < min_utility:
+                    min_utility = successor_utility
+                    min_action = action
                 beta = min(beta, min_utility)
                 if beta < alpha:
                     break
-            return (None, min_utility)
+            return min_action, min_utility
     
     def evaluate(self, state: State) -> int:
         return self.agent.evaluate(state)

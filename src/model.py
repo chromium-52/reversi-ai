@@ -1,9 +1,6 @@
-from __future__ import annotations
-from typing import List, Tuple
-
-from constants import RED, BLACK, WHITE, DARK_GREEN, WINDOW_HEIGHT, WINDOW_WIDTH
-
 import pygame
+from typing import List, Tuple
+from constants import RED, BLACK, WHITE, DARK_GREEN, WINDOW_HEIGHT, WINDOW_WIDTH
 
 # A 0-indexed row, column coordinate pair on a Reversi board
 Coordinate = Tuple[int, int]
@@ -66,7 +63,7 @@ class State:
     
     # Places the disk on the board if the move is valid and returns the resulting state
     # If the move is not valid, the current state is returned
-    def place_disk(self, action: Coordinate) -> State:
+    def place_disk(self, action: Coordinate) -> "State":
         if not self.is_valid_move(action):
             return self
         
@@ -195,7 +192,9 @@ class State:
 
         return board_string
 
+
     """ STATIC METHODS """
+
     @staticmethod
     def get_coordinate_from_position(position: Coordinate) -> Coordinate:
         x_coord, y_coord = position
@@ -232,6 +231,7 @@ class State:
             start_pos = (0, row_index * self.CELL_SIZE)
             end_pos = (WINDOW_WIDTH, row_index * self.CELL_SIZE)
             pygame.draw.line(self.window, BLACK, start_pos, end_pos, width=3)
+        
         for col_index in range(self.SIZE):
             start_pos = (col_index * self.CELL_SIZE, 0)
             end_pos = (col_index * self.CELL_SIZE, WINDOW_HEIGHT)
@@ -248,9 +248,4 @@ class State:
 
     def __repaint_valid_moves(self, valid_moves: List[Coordinate]) -> None:
         for row_index, col_index in valid_moves:
-            pygame.draw.circle(
-                self.window,
-                RED,
-                State.get_position_from_coordinate(row_index, col_index),
-                5
-            )
+            pygame.draw.circle(self.window, RED, State.get_position_from_coordinate(row_index, col_index), 5)

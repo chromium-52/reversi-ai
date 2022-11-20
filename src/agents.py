@@ -1,5 +1,5 @@
-from model import Coordinate, State
 import random
+from model import Coordinate, State
 
 # An interface for Reversi AI agents
 class Agent:
@@ -32,7 +32,9 @@ class ManualAgent(Agent):
             move = (row, column)
 
             if not state.is_valid_move(move):
-                print("Invalid move\n")
+                print("Invalid move")
+            
+            print()
             
         return move
 
