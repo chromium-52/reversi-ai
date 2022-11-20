@@ -4,7 +4,7 @@ import pygame
 from agents import Agent, ManualAgent, RandomAgent, MostDisksAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH
 
-from model import Coordinate, State
+from model import State
 from time import sleep
 from typing import Optional
 
@@ -16,7 +16,7 @@ AGENT_CHOICES_MAP = {
 
 class Main:
     
-    def __init__(self, black_agent: Agent, white_agent: Agent, slow: bool) -> None:
+    def __init__(self, black_agent: "Agent", white_agent: "Agent", slow: bool) -> None:
         self.black_agent = black_agent
         self.white_agent = white_agent
         self.slow = slow
@@ -86,7 +86,7 @@ class Main:
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     position = pygame.mouse.get_pos()
-                    move = Util.get_row_col_index_from_click_position(position)
+                    move = State.get_coordinate_from_position(position)
                     
                     state = state.place_disk(move)
 
@@ -109,8 +109,6 @@ class Main:
 
         pygame.quit()
 
-
-class Util:
     @staticmethod
     def get_agents(black_agent_type: Optional[str], white_agent_type: Optional[str]) -> Agent:
         black_agent = AGENT_CHOICES_MAP.get(black_agent_type, ManualAgent())
@@ -123,12 +121,6 @@ class Util:
         # TODO show usage message if invalid command line args are passed
         pass
 
-    @staticmethod
-    def get_row_col_index_from_click_position(position: Coordinate) -> Coordinate:
-        x_coord, y_coord = position
-        return x_coord // State.CELL_SIZE, y_coord // State.CELL_SIZE
-
-
 # Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='Reversi AI')
@@ -138,7 +130,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--slow', action='store_true')
 
     args = parser.parse_args()
-    black_agent, white_agent = Util.get_agents(args.black, args.white)
+    black_agent, white_agent = Main.get_agents(args.black, args.white)
     main = Main(black_agent, white_agent, args.slow)
 
     main.run_game(args.interactive)

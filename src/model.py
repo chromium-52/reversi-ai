@@ -193,6 +193,18 @@ class State:
 
         return board_string
 
+    """ STATIC METHODS """
+    @staticmethod
+    def get_coordinate_from_position(position: Coordinate) -> Coordinate:
+        x_coord, y_coord = position
+        return x_coord // State.CELL_SIZE, y_coord // State.CELL_SIZE
+
+    @staticmethod
+    def get_position_from_coordinate(row_index: int, col_index: int) -> Coordinate:
+        x_coord = row_index * State.CELL_SIZE + State.CELL_SIZE // 2
+        y_coord = col_index * State.CELL_SIZE + State.CELL_SIZE // 2
+        return x_coord, y_coord
+
     """ PAINT METHODS """
 
     def repaint(self) -> None:
@@ -229,7 +241,7 @@ class State:
 
         radius = (self.CELL_SIZE - 2 * self.PADDING) // 2
         piece_color = BLACK if cell == State.BLACK else WHITE
-        piece_position = (row * self.CELL_SIZE + self.CELL_SIZE // 2, col * self.CELL_SIZE + self.CELL_SIZE // 2)
+        piece_position = State.get_position_from_coordinate(row, col)
         pygame.draw.circle(self.window, piece_color, piece_position, radius)
 
     def __repaint_valid_moves(self, valid_moves: List[Coordinate]) -> None:
@@ -237,6 +249,6 @@ class State:
             pygame.draw.circle(
                 self.window,
                 RED,
-                (col_index * self.CELL_SIZE + self.CELL_SIZE // 2, row_index * self.CELL_SIZE + self.CELL_SIZE // 2),
+                State.get_position_from_coordinate(row_index, col_index),
                 5
             )
