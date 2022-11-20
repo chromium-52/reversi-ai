@@ -6,7 +6,6 @@ from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH
 from model import State
 
-
 AGENT_CHOICES_MAP = {
     'manual': ManualAgent(),
     'random': RandomAgent(),
@@ -25,7 +24,7 @@ class Main:
         else:
             self.run_game_command_line()
 
-    # Runs a game of Reversi with the given agents playing black and white
+    # Runs a game of Reversi with the specified preferences
     def run_game_command_line(self) -> None:
         print("------------------")
         print("--- Reversi AI ---")
