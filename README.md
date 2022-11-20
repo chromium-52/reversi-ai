@@ -1,6 +1,6 @@
 # reversi-ai
 
-First, `pip install pygame` in the command line to install `pygame`.
+First, run `pip install pygame` in the command line to install `pygame`.
 
 ## Usage
 
