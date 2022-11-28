@@ -5,7 +5,7 @@ from model import Coordinate, State
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
-        # Returns the sucecssor state which has the lowest utility for the other player
+        # Returns the successor state which has the lowest utility for the other player
         min_utility = 999999
         best_action = None
 
