@@ -5,13 +5,14 @@ from model import Coordinate, State
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
-        max_utility = -999999
+        # Returns the sucecssor state which has the lowest utility for the other player
+        min_utility = 999999
         best_action = None
 
         for action in state.valid_moves():
             utility = self.evaluate(state.place_disk(action))
-            if utility > max_utility:
-                max_utility = utility
+            if utility < min_utility:
+                min_utility = utility
                 best_action = action
         
         return best_action
@@ -48,9 +49,8 @@ class MostDisksAgent(Agent):
     def evaluate(self, state: State) -> int:
         turn = state.turn()
 
-        # Mismatched because the turn changes in subsequent states
-        if turn == State.WHITE:
+        if turn == State.BLACK:
             return state.black_disks()
 
-        if turn == State.BLACK:
+        if turn == State.WHITE:
             return state.white_disks()
