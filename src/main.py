@@ -14,8 +14,8 @@ AGENT_CHOICES_MAP = {
 
 class Main:
     def __init__(self, black_agent: Agent, white_agent: Agent, slow: bool) -> None:
-        self.black_agent = black_agent
-        self.white_agent = white_agent
+        State.BLACK_agent = black_agent
+        State.WHITE_agent = white_agent
         self.slow = slow
 
     def run_game(self, is_interactive: bool) -> None:
@@ -35,7 +35,7 @@ class Main:
         while not state.game_over():
             print(state)
 
-            if state.turn() == state.BLACK:
+            if state.turn() == State.BLACK:
                 print("Black's turn\n")
                 move = black_agent.get_action(state)
             else:
@@ -55,9 +55,9 @@ class Main:
         print("Game over.")
 
         winner = state.winner()
-        if winner == state.BLACK:
+        if winner == State.BLACK:
             print("Black wins!")
-        elif winner == state.WHITE:
+        elif winner == State.WHITE:
             print("White wins!")
         else:
             print("Tie!")
@@ -92,9 +92,9 @@ class Main:
 
         print("Game over.")
         winner = state.winner()
-        if winner == state.BLACK:
+        if winner == State.BLACK:
             print("Black wins!")
-        elif winner == state.WHITE:
+        elif winner == State.WHITE:
             print("White wins!")
         else:
             print("The game is tied!")

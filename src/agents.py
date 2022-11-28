@@ -5,20 +5,19 @@ from model import Coordinate, State
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
-        # Returns the successor state which has the lowest utility for the other player
-        min_utility = 999999
+        max_utility = -999999
         best_action = None
 
         for action in state.valid_moves():
-            utility = self.evaluate(state.place_disk(action))
-            if utility < min_utility:
-                min_utility = utility
+            utility = self.evaluate(state.place_disk(action), state.turn())
+            if utility > max_utility:
+                max_utility = utility
                 best_action = action
         
         return best_action
     
     # This agent's evaluation function
-    def evaluate(self, state: State) -> int:
+    def evaluate(self, state: State, player: int) -> int:
         raise NotImplementedError("Evaluation function must be implemented by subclass")
 
 # A non-AI agent that gets a move from the user
@@ -41,16 +40,14 @@ class ManualAgent(Agent):
 
 # An AI agent that randomly picks a move
 class RandomAgent(Agent):
-    def evaluate(self, state: State) -> int:
+    def evaluate(self, state: State, player: int) -> int:
         return random.randint(-100, 100)
 
-# An AI agent that returns the move which results in the most disks for the player
+# An AI agent that returns the move which results in the most disks for the given player
 class MostDisksAgent(Agent):
-    def evaluate(self, state: State) -> int:
-        turn = state.turn()
-
-        if turn == State.BLACK:
+    def evaluate(self, state: State, player: int) -> int:
+        if player == State.BLACK:
             return state.black_disks()
 
-        if turn == State.WHITE:
+        if player == State.WHITE:
             return state.white_disks()
