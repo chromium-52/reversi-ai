@@ -8,3 +8,7 @@ WHITE = (255, 255, 255)
 
 RED = (255, 0, 0)
 DARK_GREEN = (25, 123, 48)
+
+# Commands
+NO_MOVE = 'NO_MOVE'
+QUIT_GAME = 'QUIT_GAME'

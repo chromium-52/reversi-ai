@@ -1,4 +1,8 @@
 import random
+import pygame
+from typing import Union
+
+from constants import NO_MOVE, QUIT_GAME
 from model import Coordinate, State
 
 
@@ -24,7 +28,22 @@ class Agent:
 
 # A non-AI agent that gets a move from the user
 class ManualAgent(Agent):
-    def get_action(self, state: State) -> Coordinate:
+    def get_action(self, state: State) -> Union[Coordinate, str]:
+        if state.window is not None:
+            events = pygame.event.get()
+            if len(events) == 0:
+                return NO_MOVE
+
+            event = events[0]
+            if event.type == pygame.WINDOWCLOSE:
+                return QUIT_GAME
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                position = pygame.mouse.get_pos()
+                return State.get_coordinate_from_position(position)
+            
+            return NO_MOVE
+
         move = (-1, -1)
 
         while not state.is_valid_move(move):
