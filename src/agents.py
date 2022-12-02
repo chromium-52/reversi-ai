@@ -73,7 +73,7 @@ class ManualAgent(Agent):
 # An agent that randomly picks a move
 class RandomAgent(Agent):
     def evaluate(self, state: State) -> int:
-        return random.randint()
+        return random.randint(-999999, 999999)
 
 
 # An agent that returns the move which results in the most disks
