@@ -25,9 +25,16 @@ class Main:
         self.slow = slow
 
     def run_game(self, is_interactive: bool) -> None:
-        num_wins_black, num_wins_white, num_ties = 0, 0, 0
+        print("------------------")
+        print("--- Reversi AI ---")
+        print("------------------\n")
 
-        for _ in range(self.num_repeat):
+        num_wins_black, num_wins_white, num_ties = 0, 0, 0
+        
+        for i in range(self.num_repeat):
+            if i % 10 == 0:
+                print(f'Round {i}')
+
             if is_interactive:
                 winner = self.run_game_gui()
             else:
@@ -48,20 +55,19 @@ class Main:
 
     # Runs a game of Reversi with the specified preferences
     def run_game_command_line(self) -> int:
-        print("------------------")
-        print("--- Reversi AI ---")
-        print("------------------\n")
-
         state = State()
 
         while not state.game_over():
-            print(state)
+            if self.num_repeat == 1:
+                print(state)
 
             if state.turn() == State.BLACK:
-                print("Black's turn\n")
+                if self.num_repeat == 1:
+                    print("Black's turn\n")
                 move = self.black_agent.get_action(state)
             else:
-                print("White's turn\n")
+                if self.num_repeat == 1:
+                    print("White's turn\n")
                 move = self.white_agent.get_action(state)
             
             state = state.place_disk(move)
@@ -69,20 +75,25 @@ class Main:
             if self.slow:
                 sleep(1) # sleep for 1 second
         
-        print(state)
+        if self.num_repeat == 1:
+            print(state)
 
         return self.end_game_command_line(state)
         
     def end_game_command_line(self, state: State) -> int:
-        print("Game over.")
+        if self.num_repeat == 1:
+            print("Game over.")
 
         winner = state.winner()
         if winner == State.BLACK:
-            print("Black wins!")
+            if self.num_repeat == 1:
+                print("Black wins!")
         elif winner == State.WHITE:
-            print("White wins!")
+            if self.num_repeat == 1:
+                print("White wins!")
         else:
-            print("Tie!")
+            if self.num_repeat == 1:
+                print("Tie!")
         
         return winner
 
