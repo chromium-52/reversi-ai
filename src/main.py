@@ -1,7 +1,7 @@
 import argparse
 import pygame
 from time import sleep
-from typing import Optional
+from typing import List, Tuple
 
 from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
 from minimax import MinimaxAgent
@@ -9,10 +9,10 @@ from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
 
 AGENT_CHOICES_MAP = {
-    'manual': ManualAgent(),
-    'random': RandomAgent(),
-    'most_disks': MostDisksAgent(),
-    'minimax': MinimaxAgent(MostDisksAgent(), 2),
+    'manual': ManualAgent,
+    'random': RandomAgent,
+    'most_disks': MostDisksAgent,
+    'minimax': MinimaxAgent,
 }
 
 class Main:
@@ -132,12 +132,17 @@ class Main:
         return winner
 
     @staticmethod
-    def get_agents(black_agent_type: Optional[str], white_agent_type: Optional[str]) -> Agent:
-        black_agent = AGENT_CHOICES_MAP.get(black_agent_type, ManualAgent())
-        white_agent = AGENT_CHOICES_MAP.get(white_agent_type, ManualAgent())
+    def get_agents(black_agent_type: List[str], white_agent_type: List[str]) -> Tuple[Agent]:
+        return Main.get_agent(black_agent_type), Main.get_agent(white_agent_type)
 
-        return black_agent, white_agent
-    
+    @staticmethod
+    def get_agent(agent_type: List[str]) -> Agent:
+        agent = AGENT_CHOICES_MAP[(agent_type[0])]
+        if agent_type[0] == 'minimax':
+            return agent(AGENT_CHOICES_MAP[agent_type[1]](), int(agent_type[2]))
+        else:
+            return agent()
+
     @staticmethod
     def show_arg_usage() -> None:
         # TODO show usage message if invalid command line args are passed
@@ -146,8 +151,8 @@ class Main:
 # Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog = 'Reversi AI')
-    parser.add_argument('-b', '--black', choices = AGENT_CHOICES_MAP.keys())
-    parser.add_argument('-w', '--white', choices = AGENT_CHOICES_MAP.keys())
+    parser.add_argument('-b', '--black', nargs='+', required=True)
+    parser.add_argument('-w', '--white', nargs='+', required=True)
     parser.add_argument('-r', '--repeat', type=int, default=1)
     parser.add_argument('-i', '--interactive', action = 'store_true')
     parser.add_argument('-s', '--slow', action = 'store_true')
