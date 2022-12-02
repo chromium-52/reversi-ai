@@ -8,6 +8,7 @@ from model import Coordinate, State
 
 
 # An interface for Reversi AI agents
+# All implementing evaluation functions only evaluate for black
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
@@ -77,3 +78,14 @@ class PercentDisksAgent(Agent):
     def evaluate(self, state: State) -> int:
         percent_disks = state.black_disks() / (state.black_disks() + state.white_disks())
         return int(percent_disks * 100)
+
+class WeightedDiskByRadiusAgent(Agent):
+    def evaluate(self, state: State) -> int:
+        board = state.board
+        score = 0
+        for row in range(len(board)):
+            for col in range(len(board[row])):
+                if board[row][col] == State.BLACK:
+                    score += ((row - 3.5)**2 + (col - 3.5)**2) ** 0.5
+        return score
+
