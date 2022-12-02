@@ -104,19 +104,43 @@ class MobilityAgent(Agent):
 
 # Agent that assigns weights to each of the positions on the board
 class PositionalAgent(Agent):
-    # The default position weights
-    DEFAULT = [[100, -20, 10,  5,  5, 10, -20, 100],
-               [-20, -50, -2, -2, -2, -2, -50, -20],
-               [ 10,  -2, -1, -1, -1, -1,  -2,  10],
-               [  5,  -2, -1, -1, -1, -1,  -2,   5],
-               [  5,  -2, -1, -1, -1, -1,  -2,   5],
-               [ 10,  -2, -1, -1, -1, -1,  -2,  10],
-               [-20, -50, -2, -2, -2, -2, -50, -20],
-               [100, -20, 10,  5,  5, 10, -20, 100]]
+    # position weights
+
+    # https://www.sciencedirect.com/science/article/pii/S0305054806002553
+    ONE = [[100, -20, 10,  5,  5, 10, -20, 100],
+           [-20, -50, -2, -2, -2, -2, -50, -20],
+           [ 10,  -2, -1, -1, -1, -1,  -2,  10],
+           [  5,  -2, -1, -1, -1, -1,  -2,   5],
+           [  5,  -2, -1, -1, -1, -1,  -2,   5],
+           [ 10,  -2, -1, -1, -1, -1,  -2,  10],
+           [-20, -50, -2, -2, -2, -2, -50, -20],
+           [100, -20, 10,  5,  5, 10, -20, 100]]
+    
+    # https://www.ai.rug.nl/~mwiering/GROUP/ARTICLES/paper-othello.pdf
+    TWO = [[100, -25, 10,  5,  5, 10, -25, 100],
+           [-25, -25,  2,  2,  2,  2, -25, -25],
+           [ 10,   2,  5,  1,  1,  5,   2,  10],
+           [  5,   2,  1,  2,  2,  1,   2,   5],
+           [  5,   2,  1,  2,  2,  1,   2,   5],
+           [ 10,   2,  5,  1,  1,  5,   2,  10],
+           [-25, -25,  2,  2,  2,  2, -25, -25],
+           [100, -25, 10,  5,  5, 10, -25, 100]]
+
+    # https://www.ai.rug.nl/~mwiering/GROUP/ARTICLES/paper-othello.pdf    
+    THREE = [[ 80, -26,  24, -1,  -5,  28, -18,  76],
+             [-23, -39, -18, -9,  -6,  -8, -39,  -1],
+             [ 46, -16,   4,  1,  -3,   6, -20,  52],
+             [-13,  -5,   2, -1,   4,   3, -12,  -2],
+             [ -5,  -6,   1, -2,  -3,   0,  -9,  -5],
+             [ 48, -13,  12,  5,   0,   5, -24,  41],
+             [-27, -53, -11, -1, -11, -16, -58, -15],
+             [ 87, -25,  27, -1,   5,  36,  -3, 100]]
+
+    WEIGHTS = [ONE, TWO, THREE]
 
     # Creates a new positional agent with a grid of weights
-    def __init__(self, weights: List[List[int]] = DEFAULT):
-        self.weights = weights
+    def __init__(self, weight_index: int = 0):
+        self.weights = self.WEIGHTS[weight_index]
 
     def evaluate(self, state: State) -> int:
         utility = 0

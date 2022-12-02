@@ -151,6 +151,8 @@ class Main:
         agent = AGENT_CHOICES_MAP[(agent_type[0])]
         if agent_type[0] == 'minimax':
             return agent(AGENT_CHOICES_MAP[agent_type[1]](), int(agent_type[2]))
+        elif agent_type[0] == 'positional':
+            return agent(int(agent_type[1]) - 1)
         else:
             return agent()
 
