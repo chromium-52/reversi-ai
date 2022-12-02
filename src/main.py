@@ -19,6 +19,8 @@ class Main:
     def __init__(self, black_agent: Agent, white_agent: Agent, num_repeat: int, slow: bool) -> None:
         State.BLACK_agent = black_agent
         State.WHITE_agent = white_agent
+        self.black_agent = black_agent
+        self.white_agent = white_agent
         self.num_repeat = num_repeat
         self.slow = slow
 
@@ -39,7 +41,10 @@ class Main:
                 num_ties += 1
         
         print('GAME SUMMARY')
-
+        print(f'Number of games played: {self.num_repeat}')
+        print(f'Black ({self.black_agent}): {num_wins_black} (win rate: {round(num_wins_black / self.num_repeat * 100, 3)}%)')
+        print(f'White ({self.white_agent}): {num_wins_white} (win rate: {round(num_wins_white / self.num_repeat * 100, 3)}%)')
+        print(f'Ties: {num_ties}')
 
     # Runs a game of Reversi with the specified preferences
     def run_game_command_line(self) -> int:

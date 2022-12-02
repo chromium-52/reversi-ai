@@ -10,6 +10,9 @@ class MinimaxAgent(Agent):
         self.agent = agent
         self.depth = depth
     
+    def __str__(self) -> str:
+        return f"Minimax - {self.agent.__str__()}"
+
     def get_action(self, state: State) -> Coordinate:
         return self.get_action_helper(state, state.turn() == State.BLACK, 0, -math.inf, math.inf)[0]
     

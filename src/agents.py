@@ -29,6 +29,9 @@ class Agent:
 
 # A non-AI agent that gets a move from the user
 class ManualAgent(Agent):
+    def __str__(self) -> str:
+        return "Manual"
+
     def get_action(self, state: State) -> Union[Coordinate, str]:
         if state.window is not None:
             events = pygame.event.get()
@@ -63,17 +66,26 @@ class ManualAgent(Agent):
 
 # An AI agent that randomly picks a move
 class RandomAgent(Agent):
+    def __str__(self) -> str:
+        return "Random"
+
     def evaluate(self, state: State) -> int:
         return random.randint(-100, 100)
 
 
 # An AI agent that returns the move which results in the most disks
 class MostDisksAgent(Agent):
+    def __str__(self) -> str:
+        return "Most Disks"
+
     def evaluate(self, state: State) -> int:
         return state.black_disks()
 
 
 class PercentDisksAgent(Agent):
+    def __str__(self) -> str:
+        return "Percent Disks"
+    
     def evaluate(self, state: State) -> int:
         percent_disks = state.black_disks() / (state.black_disks() + state.white_disks())
         return int(percent_disks * 100)
