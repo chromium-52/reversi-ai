@@ -9,16 +9,13 @@ class MinimaxAgent(Agent):
     def __init__(self, agent: Agent, depth: int):
         self.agent = agent
         self.depth = depth
-    
-    def __str__(self) -> str:
-        return f"Minimax - {self.agent.__str__()}"
 
     def get_action(self, state: State) -> Coordinate:
         return self.get_action_helper(state, state.turn() == State.BLACK, 0, -math.inf, math.inf)[0]
     
     def get_action_helper(self, state: State, maximize: bool, depth: int, alpha: int, beta: int) -> Tuple[Coordinate, int]:
         if depth == self.depth or state.game_over():
-            return self.agent.get_action(), self.evaluate(state)
+            return self.agent.get_action(state), self.evaluate(state)
         
         if maximize:
             max_utility = -math.inf
@@ -47,3 +44,6 @@ class MinimaxAgent(Agent):
     
     def evaluate(self, state: State) -> int:
         return self.agent.evaluate(state)
+    
+    def __str__(self) -> str:
+        return f"{self.agent.__str__()} Minimax"

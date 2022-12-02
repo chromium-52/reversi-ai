@@ -36,11 +36,8 @@ class Agent:
         raise NotImplementedError("Evaluation function must be implemented by subclass")
 
 
-# An agent that gets a move from the user
+# Agent that gets a move from the user
 class ManualAgent(Agent):
-    def __str__(self) -> str:
-        return "Manual"
-
     def get_action(self, state: State) -> Union[Coordinate, str]:
         if state.window is not None:
             events = pygame.event.get()
@@ -71,33 +68,44 @@ class ManualAgent(Agent):
             print()
 
         return move
+    
+    def __str__(self) -> str:
+        return "Manual"
 
 
-# An agent that randomly picks a move
+# Agent that randomly picks a move
 class RandomAgent(Agent):
+    def evaluate(self, state: State) -> int:
+        return random.randint(-1000, 1000)
+    
     def __str__(self) -> str:
         return "Random"
 
-    def evaluate(self, state: State) -> int:
-        return random.randint(-999999, 999999)
 
-
-# An agent that returns the move which results in the most disks
+# Agent that returns the move which results in the most disks
 class MostDisksAgent(Agent):
+    def evaluate(self, state: State) -> int:
+        return state.black_disks() - state.white_disks()
+    
     def __str__(self) -> str:
         return "Most Disks"
 
-    def evaluate(self, state: State) -> int:
-        return state.black_disks()
+
+# Agent that 
+#class 
+
+
+# Agent that assigns weights to each of the squares on the board
+#class 
 
 
 class PercentDisksAgent(Agent):
-    def __str__(self) -> str:
-        return "Percent Disks"
-    
     def evaluate(self, state: State) -> int:
         percent_disks = state.black_disks() / (state.black_disks() + state.white_disks())
         return int(percent_disks * 100)
+    
+    def __str__(self) -> str:
+        return "Percent Disks"
 
 class WeightedDiskByRadiusAgent(Agent):
     def evaluate(self, state: State) -> int:
