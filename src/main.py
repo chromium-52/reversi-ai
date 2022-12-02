@@ -73,7 +73,7 @@ class Main:
         state = State(window=window)
 
         state.repaint()
-        sleep(3)
+        sleep(2)
 
         while not state.game_over():
             clock.tick(60)
@@ -88,8 +88,7 @@ class Main:
 
             state = state.place_disk(move)
             state.repaint()
-            if isinstance(curr_agent, MinimaxAgent):
-                sleep(3)
+            sleep(1)
         
         self.end_game_gui(state)
         
