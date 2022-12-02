@@ -1,7 +1,7 @@
 import math
 import random
 import pygame
-from typing import Union
+from typing import List, Union
 
 from constants import NO_MOVE, QUIT_GAME
 from model import Coordinate, State
@@ -91,12 +91,46 @@ class MostDisksAgent(Agent):
         return "Most Disks"
 
 
-# Agent that 
-#class 
+# Agent that returns the move which maximizes the number of moves
+class MobilityAgent(Agent):
+    def evaluate(self, state: State) -> int:
+        if state.turn() == State.BLACK:
+            return len(state.valid_moves())
+        if state.turn() == State.WHITE:
+            return -len(state.valid_moves)
+    
+    def __str__(self) -> str:
+        return "Mobility"
 
 
-# Agent that assigns weights to each of the squares on the board
-#class 
+# Agent that assigns weights to each of the positions on the board
+class PositionalAgent(Agent):
+    # The default position weights
+    DEFAULT = [[100, -20, 10,  5,  5, 10, -20, 100],
+               [-20, -50, -2, -2, -2, -2, -50, -20],
+               [ 10,  -2, -1, -1, -1, -1,  -2,  10],
+               [  5,  -2, -1, -1, -1, -1,  -2,   5],
+               [  5,  -2, -1, -1, -1, -1,  -2,   5],
+               [ 10,  -2, -1, -1, -1, -1,  -2,  10],
+               [-20, -50, -2, -2, -2, -2, -50, -20],
+               [100, -20, 10,  5,  5, 10, -20, 100]]
+
+    # Creates a new positional agent with a grid of weights
+    def __init__(self, weights: List[List[int]] = DEFAULT):
+        self.weights = weights
+
+    def evaluate(self, state: State) -> int:
+        utility = 0
+
+        for row in range(State.SIZE):
+            for col in range(State.SIZE):
+                if state.board[row][col] == State.BLACK:
+                    utility += self.weights[row][col]
+                if state.board[row][col] == State.WHITE:
+                    utility -= self.weights[row][col]
+    
+    def __str__(self) -> str:
+        return "Positional"
 
 
 class PercentDisksAgent(Agent):
