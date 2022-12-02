@@ -18,7 +18,7 @@ class MinimaxAgent(Agent):
     
     def get_action_helper(self, state: State, maximize: bool, depth: int, alpha: int, beta: int) -> Tuple[Coordinate, int]:
         if depth == self.depth or state.game_over():
-            return None, self.evaluate(state)
+            return self.agent.get_action(), self.evaluate(state)
         
         if maximize:
             max_utility = -math.inf
@@ -34,7 +34,7 @@ class MinimaxAgent(Agent):
             return max_action, max_utility
         else:
             min_utility = math.inf
-            min_action = None # Not really necessary to keep track of; will never be returned to the top-level call
+            min_action = None
             for action in state.valid_moves():
                 successor_utility = self.get_action_helper(state.place_disk(action), True, depth + 1, alpha, beta)[1]
                 if successor_utility < min_utility:

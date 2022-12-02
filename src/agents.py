@@ -8,17 +8,26 @@ from model import Coordinate, State
 
 
 # An interface for Reversi AI agents
+# All implementing evaluation functions only evaluate for black
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
-        max_utility = -math.inf
         best_action = None
 
-        for action in state.valid_moves():
-            utility = self.evaluate(state.place_disk(action))
-            if utility > max_utility:
-                max_utility = utility
-                best_action = action
+        if state.turn() == State.BLACK:
+            max_utility = -math.inf
+            for action in state.valid_moves():
+                utility = self.evaluate(state.place_disk(action))
+                if utility > max_utility:
+                    max_utility = utility
+                    best_action = action
+        else:
+            min_utility = math.inf
+            for action in state.valid_moves():
+                utility = self.evaluate(state.place_disk(action))
+                if utility < min_utility:
+                    min_utility = utility
+                    best_action = action
 
         return best_action
 
@@ -27,7 +36,7 @@ class Agent:
         raise NotImplementedError("Evaluation function must be implemented by subclass")
 
 
-# A non-AI agent that gets a move from the user
+# An agent that gets a move from the user
 class ManualAgent(Agent):
     def __str__(self) -> str:
         return "Manual"
@@ -64,16 +73,16 @@ class ManualAgent(Agent):
         return move
 
 
-# An AI agent that randomly picks a move
+# An agent that randomly picks a move
 class RandomAgent(Agent):
     def __str__(self) -> str:
         return "Random"
 
     def evaluate(self, state: State) -> int:
-        return random.randint(-100, 100)
+        return random.randint()
 
 
-# An AI agent that returns the move which results in the most disks
+# An agent that returns the move which results in the most disks
 class MostDisksAgent(Agent):
     def __str__(self) -> str:
         return "Most Disks"
@@ -89,3 +98,14 @@ class PercentDisksAgent(Agent):
     def evaluate(self, state: State) -> int:
         percent_disks = state.black_disks() / (state.black_disks() + state.white_disks())
         return int(percent_disks * 100)
+
+class WeightedDiskByRadiusAgent(Agent):
+    def evaluate(self, state: State) -> int:
+        board = state.board
+        score = 0
+        for row in range(len(board)):
+            for col in range(len(board[row])):
+                if board[row][col] == State.BLACK:
+                    score += ((row - 3.5)**2 + (col - 3.5)**2) ** 0.5
+        return score
+
