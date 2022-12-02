@@ -1,3 +1,4 @@
+import math
 import random
 from model import Coordinate, State
 
@@ -5,7 +6,7 @@ from model import Coordinate, State
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
-        max_utility = -999999
+        max_utility = -math.inf
         best_action = None
 
         for action in state.valid_moves():
