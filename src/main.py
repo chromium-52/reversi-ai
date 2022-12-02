@@ -3,7 +3,7 @@ import pygame
 from time import sleep
 from typing import List, Tuple
 
-from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
+from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent, RandomAgent
 from minimax import MinimaxAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
@@ -12,13 +12,13 @@ AGENT_CHOICES_MAP = {
     'manual': ManualAgent,
     'random': RandomAgent,
     'most_disks': MostDisksAgent,
+    'mobility': MobilityAgent,
+    'positional': PositionalAgent,
     'minimax': MinimaxAgent,
 }
 
 class Main:
     def __init__(self, black_agent: Agent, white_agent: Agent, num_repeat: int, slow: bool) -> None:
-        State.BLACK_agent = black_agent
-        State.WHITE_agent = white_agent
         self.black_agent = black_agent
         self.white_agent = white_agent
         self.num_repeat = num_repeat
