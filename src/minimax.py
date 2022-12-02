@@ -46,4 +46,4 @@ class MinimaxAgent(Agent):
         return self.agent.evaluate(state)
     
     def __str__(self) -> str:
-        return f"{self.agent.__str__()} Minimax"
+        return f"{self.agent} Minimax, depth {self.depth}"

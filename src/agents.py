@@ -6,7 +6,6 @@ from typing import List, Union
 from constants import NO_MOVE, QUIT_GAME
 from model import Coordinate, State
 
-
 # An interface for Reversi AI agents
 # All implementing evaluation functions only evaluate for black
 class Agent:
@@ -128,6 +127,8 @@ class PositionalAgent(Agent):
                     utility += self.weights[row][col]
                 if state.board[row][col] == State.WHITE:
                     utility -= self.weights[row][col]
+        
+        return utility
     
     def __str__(self) -> str:
         return "Positional"
