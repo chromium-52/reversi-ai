@@ -13,7 +13,7 @@ class Agent:
         best_action = None
 
         for action in state.valid_moves():
-            utility = self.evaluate(state.place_disk(action))
+            utility = self.evaluate(state.place_disk(action), state.turn())
             if utility > max_utility:
                 max_utility = utility
                 best_action = action
@@ -21,7 +21,7 @@ class Agent:
         return best_action
     
     # This agent's evaluation function
-    def evaluate(self, state: State) -> int:
+    def evaluate(self, state: State, player: int) -> int:
         raise NotImplementedError("Evaluation function must be implemented by subclass")
 
 # A non-AI agent that gets a move from the user
@@ -59,17 +59,14 @@ class ManualAgent(Agent):
 
 # An AI agent that randomly picks a move
 class RandomAgent(Agent):
-    def evaluate(self, state: State) -> int:
+    def evaluate(self, state: State, player: int) -> int:
         return random.randint(-100, 100)
 
-# An AI agent that returns the move which results in the most disks for the player
+# An AI agent that returns the move which results in the most disks for the given player
 class MostDisksAgent(Agent):
-    def evaluate(self, state: State) -> int:
-        turn = state.turn()
-
-        # Mismatched because the turn changes in subsequent states
-        if turn == State.WHITE:
+    def evaluate(self, state: State, player: int) -> int:
+        if player == State.BLACK:
             return state.black_disks()
 
-        if turn == State.BLACK:
+        if player == State.WHITE:
             return state.white_disks()

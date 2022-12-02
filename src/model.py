@@ -7,7 +7,7 @@ Coordinate = Tuple[int, int]
 
 # A complete Reversi game state
 class State:
-    # The row and column dimension of the board for this game
+    # The standard row and column dimension of a Reversi board
     SIZE = 8
 
     # Integer representations for each individual board cell state
@@ -41,7 +41,7 @@ class State:
 
         for row in self.board:
             for cell in row:
-                if cell == self.BLACK:
+                if cell == State.BLACK:
                     black_disks += 1
         
         return black_disks
@@ -52,7 +52,7 @@ class State:
 
         for row in self.board:
             for cell in row:
-                if cell == self.WHITE:
+                if cell == State.WHITE:
                     white_disks += 1
         
         return white_disks
@@ -69,7 +69,7 @@ class State:
         
         turn = self.turn()
         
-        board = [[self.board[row][col] for col in range(self.SIZE)] for row in range(self.SIZE)]
+        board = [[self.board[row][col] for col in range(State.SIZE)] for row in range(State.SIZE)]
 
         row, column = action
 
@@ -101,7 +101,7 @@ class State:
         return len(self.valid_move_directions(action)) != 0
     
     def is_valid_coordinate(self, row_index: int, col_index: int) -> bool:
-        return 0 <= row_index < self.SIZE and 0 <= col_index < self.SIZE
+        return 0 <= row_index < State.SIZE and 0 <= col_index < State.SIZE
 
     # Returns the list of directions in which disks can be flipped
     def valid_move_directions(self, action: Coordinate) -> List[Coordinate]:
@@ -154,10 +154,10 @@ class State:
     
     # Returns the list of valid actions from this Reversi state
     def valid_moves(self) -> List[Coordinate]:
-        if self.black_disks() + self.white_disks() == self.SIZE * self.SIZE:
+        if self.black_disks() + self.white_disks() == State.SIZE * State.SIZE:
             return []
         
-        moves = [(row, col) for row in range(self.SIZE) for col in range(self.SIZE)]
+        moves = [(row, col) for row in range(State.SIZE) for col in range(State.SIZE)]
         moves = [move for move in moves if self.is_valid_move(move)]
 
         return moves
@@ -170,10 +170,10 @@ class State:
     # Returns 0 if the game is tied
     def winner(self) -> int:
         if self.black_disks() > self.white_disks():
-            return self.BLACK
+            return State.BLACK
         if self.white_disks() > self.black_disks():
-            return self.WHITE
-        return self.EMPTY
+            return State.WHITE
+        return State.EMPTY
     
     # Returns a string representation of the board
     def __str__(self) -> str:
@@ -181,11 +181,11 @@ class State:
 
         for row in self.board:
             for cell in row:
-                if cell == self.EMPTY:
+                if cell == State.EMPTY:
                     board_string += "0"
-                if cell == self.BLACK:
+                if cell == State.BLACK:
                     board_string += "1"
-                if cell == self.WHITE:
+                if cell == State.WHITE:
                     board_string += "2"
                 board_string += " "
             board_string += "\n"
@@ -227,21 +227,21 @@ class State:
     def __repaint_background(self) -> None:
         self.window.fill(DARK_GREEN)
 
-        for row_index in range(self.SIZE):
-            start_pos = (0, row_index * self.CELL_SIZE)
-            end_pos = (WINDOW_WIDTH, row_index * self.CELL_SIZE)
+        for row_index in range(State.SIZE):
+            start_pos = (0, row_index * State.CELL_SIZE)
+            end_pos = (WINDOW_WIDTH, row_index * State.CELL_SIZE)
             pygame.draw.line(self.window, BLACK, start_pos, end_pos, width=3)
         
-        for col_index in range(self.SIZE):
-            start_pos = (col_index * self.CELL_SIZE, 0)
-            end_pos = (col_index * self.CELL_SIZE, WINDOW_HEIGHT)
+        for col_index in range(State.SIZE):
+            start_pos = (col_index * State.CELL_SIZE, 0)
+            end_pos = (col_index * State.CELL_SIZE, WINDOW_HEIGHT)
             pygame.draw.line(self.window, BLACK, start_pos, end_pos, width=3)
 
     def __repaint_piece(self, row: int, col: int, cell: int) -> None:
         if cell == 0:
             return
 
-        radius = (self.CELL_SIZE - 2 * self.PADDING) // 2
+        radius = (State.CELL_SIZE - 2 * State.PADDING) // 2
         piece_color = BLACK if cell == State.BLACK else WHITE
         piece_position = State.get_position_from_coordinate(row, col)
         pygame.draw.circle(self.window, piece_color, piece_position, radius)
