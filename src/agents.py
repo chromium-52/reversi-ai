@@ -66,7 +66,7 @@ class RandomAgent(Agent):
         return random.randint(-100, 100)
 
 
-# An AI agent that returns the move which results in the most disks for the given player
+# An AI agent that returns the move which results in the most disks
 class MostDisksAgent(Agent):
     def evaluate(self, state: State) -> int:
         return state.black_disks()
