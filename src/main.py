@@ -143,11 +143,6 @@ class Main:
         else:
             return agent()
 
-    @staticmethod
-    def show_arg_usage() -> None:
-        # TODO show usage message if invalid command line args are passed
-        pass
-
 # Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog = 'Reversi AI')
