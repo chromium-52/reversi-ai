@@ -59,10 +59,10 @@ class Main:
 
             if state.turn() == State.BLACK:
                 print("Black's turn\n")
-                move = black_agent.get_action(state)
+                move = self.black_agent.get_action(state)
             else:
                 print("White's turn\n")
-                move = white_agent.get_action(state)
+                move = self.white_agent.get_action(state)
             
             state = state.place_disk(move)
 
@@ -99,7 +99,7 @@ class Main:
         while not state.game_over():
             clock.tick(60)
 
-            curr_agent = black_agent if state.turn() == state.BLACK else white_agent
+            curr_agent = self.black_agent if state.turn() == state.BLACK else self.white_agent
             move = curr_agent.get_action(state)
 
             if move == NO_MOVE or move is None:
