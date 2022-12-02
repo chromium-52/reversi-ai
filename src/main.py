@@ -2,14 +2,17 @@ import argparse
 import pygame
 from time import sleep
 from typing import Optional
+
 from agents import Agent, ManualAgent, MostDisksAgent, RandomAgent
-from constants import WINDOW_HEIGHT, WINDOW_WIDTH
+from minimax import MinimaxAgent
+from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
 
 AGENT_CHOICES_MAP = {
     'manual': ManualAgent(),
     'random': RandomAgent(),
     'most_disks': MostDisksAgent(),
+    'minimax': MinimaxAgent(MostDisksAgent(), 2),
 }
 
 class Main:
@@ -69,20 +72,23 @@ class Main:
         clock = pygame.time.Clock()
         state = State(window=window)
 
+        state.repaint()
+        sleep(2)
+
         while not state.game_over():
-            clock.tick(60) # 60 frames per second
+            clock.tick(60)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return
-                
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    position = pygame.mouse.get_pos()
-                    move = State.get_coordinate_from_position(position)
-                    
-                    state = state.place_disk(move)
+            curr_agent = black_agent if state.turn() == state.BLACK else white_agent
+            move = curr_agent.get_action(state)
 
+            if move == NO_MOVE or move is None:
+                continue
+            if move == QUIT_GAME:
+                return
+
+            state = state.place_disk(move)
             state.repaint()
+            sleep(1)
         
         self.end_game_gui(state)
         
@@ -98,6 +104,7 @@ class Main:
             print("White wins!")
         else:
             print("The game is tied!")
+        print(f"Score - Black: {state.black_disks()}, White: {state.white_disks()}")
 
         pygame.quit()
 
