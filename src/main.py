@@ -150,11 +150,12 @@ class Main:
     def get_agent(agent_type: List[str]) -> Agent:
         agent = AGENT_CHOICES_MAP[(agent_type[0])]
         if agent_type[0] == 'minimax':
+            if agent_type[1] == 'positional':
+                return agent(AGENT_CHOICES_MAP[agent_type[1]](int(agent_type[2]) - 1), int(agent_type[3]))
             return agent(AGENT_CHOICES_MAP[agent_type[1]](), int(agent_type[2]))
-        elif agent_type[0] == 'positional':
+        if agent_type[0] == 'positional':
             return agent(int(agent_type[1]) - 1)
-        else:
-            return agent()
+        return agent()
 
 # Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
