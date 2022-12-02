@@ -108,4 +108,3 @@ class WeightedDiskByRadiusAgent(Agent):
                 if board[row][col] == State.BLACK:
                     score += ((row - 3.5)**2 + (col - 3.5)**2) ** 0.5
         return score
-
