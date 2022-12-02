@@ -11,11 +11,11 @@ class MinimaxAgent(Agent):
         self.depth = depth
     
     def get_action(self, state: State) -> Coordinate:
-        return self.get_action_helper(state, state.turn(), True, 0, -math.inf, math.inf)[0]
+        return self.get_action_helper(state, state.turn() == State.BLACK, 0, -math.inf, math.inf)[0]
     
     def get_action_helper(self, state: State, maximize: bool, depth: int, alpha: int, beta: int) -> Tuple[Coordinate, int]:
         if depth == self.depth or state.game_over():
-            return None, self.evaluate(state, player)
+            return None, self.evaluate(state)
         
         if maximize:
             max_utility = -math.inf

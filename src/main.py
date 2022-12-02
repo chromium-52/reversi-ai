@@ -16,19 +16,33 @@ AGENT_CHOICES_MAP = {
 }
 
 class Main:
-    def __init__(self, black_agent: Agent, white_agent: Agent, slow: bool) -> None:
+    def __init__(self, black_agent: Agent, white_agent: Agent, num_repeat: int, slow: bool) -> None:
         State.BLACK_agent = black_agent
         State.WHITE_agent = white_agent
+        self.num_repeat = num_repeat
         self.slow = slow
 
     def run_game(self, is_interactive: bool) -> None:
-        if is_interactive:
-            self.run_game_gui()
-        else:
-            self.run_game_command_line()
+        num_wins_black, num_wins_white, num_ties = 0, 0, 0
+
+        for _ in range(self.num_repeat):
+            if is_interactive:
+                winner = self.run_game_gui()
+            else:
+                winner = self.run_game_command_line()
+            
+            if winner == State.BLACK:
+                num_wins_black += 1
+            elif winner == State.WHITE:
+                num_wins_white += 1
+            else:
+                num_ties += 1
+        
+        print('GAME SUMMARY')
+
 
     # Runs a game of Reversi with the specified preferences
-    def run_game_command_line(self) -> None:
+    def run_game_command_line(self) -> int:
         print("------------------")
         print("--- Reversi AI ---")
         print("------------------\n")
@@ -52,9 +66,9 @@ class Main:
         
         print(state)
 
-        self.end_game_command_line(state)
+        return self.end_game_command_line(state)
         
-    def end_game_command_line(self, state: State) -> None:
+    def end_game_command_line(self, state: State) -> int:
         print("Game over.")
 
         winner = state.winner()
@@ -64,8 +78,10 @@ class Main:
             print("White wins!")
         else:
             print("Tie!")
+        
+        return winner
 
-    def run_game_gui(self) -> None:
+    def run_game_gui(self) -> int:
         window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption('Reversi')
 
@@ -90,9 +106,9 @@ class Main:
             state.repaint()
             sleep(1)
         
-        self.end_game_gui(state)
+        return self.end_game_gui(state)
         
-    def end_game_gui(self, state: State) -> None:
+    def end_game_gui(self, state: State) -> int:
         if not state.game_over():
             print("Game interrupted")
 
@@ -107,6 +123,8 @@ class Main:
         print(f"Score - Black: {state.black_disks()}, White: {state.white_disks()}")
 
         pygame.quit()
+
+        return winner
 
     @staticmethod
     def get_agents(black_agent_type: Optional[str], white_agent_type: Optional[str]) -> Agent:
@@ -125,11 +143,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog = 'Reversi AI')
     parser.add_argument('-b', '--black', choices = AGENT_CHOICES_MAP.keys())
     parser.add_argument('-w', '--white', choices = AGENT_CHOICES_MAP.keys())
+    parser.add_argument('-r', '--repeat', type=int, default=1)
     parser.add_argument('-i', '--interactive', action = 'store_true')
     parser.add_argument('-s', '--slow', action = 'store_true')
 
     args = parser.parse_args()
     black_agent, white_agent = Main.get_agents(args.black, args.white)
-    main = Main(black_agent, white_agent, args.slow)
+    main = Main(black_agent, white_agent, args.repeat, args.slow)
 
     main.run_game(args.interactive)
