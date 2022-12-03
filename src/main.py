@@ -4,14 +4,14 @@ import time
 from time import sleep
 from typing import List, Tuple
 
-from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent, RandomAgent
+from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent
 from minimax import MinimaxAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
 
 AGENT_CHOICES_MAP = {
     'manual': ManualAgent,
-    'random': RandomAgent,
+    'random': Agent,
     'most_disks': MostDisksAgent,
     'mobility': MobilityAgent,
     'positional': PositionalAgent,

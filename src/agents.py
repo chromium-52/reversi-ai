@@ -11,28 +11,39 @@ from model import Coordinate, State
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
-        best_action = None
+        best_actions = [None]
 
         if state.turn() == State.BLACK:
             max_utility = -math.inf
             for action in state.valid_moves():
                 utility = self.evaluate(state.place_disk(action))
+                if utility == max_utility:
+                    best_actions.append(action)
                 if utility > max_utility:
                     max_utility = utility
-                    best_action = action
+                    best_actions = [action]
         else:
             min_utility = math.inf
             for action in state.valid_moves():
                 utility = self.evaluate(state.place_disk(action))
+                if utility == min_utility:
+                    best_actions.append(action)
                 if utility < min_utility:
                     min_utility = utility
-                    best_action = action
+                    best_actions = [action]
 
-        return best_action
+        return self.tiebreaker(best_actions)
 
     # This agent's evaluation function
     def evaluate(self, state: State) -> int:
-        raise NotImplementedError("Evaluation function must be implemented by subclass")
+        return 0
+    
+    # Breaks ties between actions that lead to states with the same utility
+    def tiebreaker(self, actions: List[Coordinate]) -> Coordinate:
+        return random.choice(actions)
+    
+    def __str__(self) -> str:
+        return "Random"
 
 
 # Agent that gets a move from the user
@@ -70,15 +81,6 @@ class ManualAgent(Agent):
     
     def __str__(self) -> str:
         return "Manual"
-
-
-# Agent that randomly picks a move
-class RandomAgent(Agent):
-    def evaluate(self, state: State) -> int:
-        return random.randint(-1000, 1000)
-    
-    def __str__(self) -> str:
-        return "Random"
 
 
 # Agent that returns the move which results in the most disks
