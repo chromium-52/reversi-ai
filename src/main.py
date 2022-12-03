@@ -1,9 +1,10 @@
 import argparse
 import pygame
+import time
 from time import sleep
 from typing import List, Tuple
 
-from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent, SuperiorAgent
+from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent, StabilityAgent, RadiusAgent, SuperiorAgent
 from minimax import MinimaxAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
@@ -14,6 +15,8 @@ AGENT_CHOICES_MAP = {
     'most_disks': MostDisksAgent,
     'mobility': MobilityAgent,
     'positional': PositionalAgent,
+    'stability': StabilityAgent,
+    'radius': RadiusAgent,
     'superior': SuperiorAgent,
 
     'minimax': MinimaxAgent,
@@ -33,6 +36,7 @@ class Main:
 
         num_wins_black, num_wins_white, num_ties = 0, 0, 0
         
+        start_time = time.time()
         for i in range(self.num_repeat):
             if i % 10 == 0:
                 print(f'Round {i}')
@@ -48,8 +52,9 @@ class Main:
                 num_wins_white += 1
             else:
                 num_ties += 1
-        
-        print('GAME SUMMARY')
+
+        print('\nGAME SUMMARY')
+        print(f'The code took {round(time.time() - start_time)} seconds to run')
         print(f'Number of games played: {self.num_repeat}')
         print(f'Black ({self.black_agent}): {num_wins_black} (win rate: {round(num_wins_black / self.num_repeat * 100, 3)}%)')
         print(f'White ({self.white_agent}): {num_wins_white} (win rate: {round(num_wins_white / self.num_repeat * 100, 3)}%)')
