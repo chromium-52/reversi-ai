@@ -3,7 +3,7 @@ import pygame
 from time import sleep
 from typing import List, Tuple
 
-from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent
+from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent, SuperiorAgent
 from minimax import MinimaxAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
@@ -14,6 +14,8 @@ AGENT_CHOICES_MAP = {
     'most_disks': MostDisksAgent,
     'mobility': MobilityAgent,
     'positional': PositionalAgent,
+    'superior': SuperiorAgent,
+
     'minimax': MinimaxAgent,
 }
 

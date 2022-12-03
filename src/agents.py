@@ -98,7 +98,7 @@ class MobilityAgent(Agent):
         if state.turn() == State.BLACK:
             return len(state.valid_moves())
         if state.turn() == State.WHITE:
-            return -len(state.valid_moves)
+            return -len(state.valid_moves())
     
     def __str__(self) -> str:
         return "Mobility"
@@ -158,3 +158,38 @@ class PositionalAgent(Agent):
     
     def __str__(self) -> str:
         return "Positional"
+
+
+# Agent that combines evaluation functions
+class CompositeAgent(Agent):
+    # Creates a new composite agent with the given agents
+    def __init__(self, agents: List[Agent]):
+        self.agents = agents
+    
+    def evaluate(self, state: State) -> int:
+        weights = self.get_weights(state.black_disks() + state.white_disks())
+
+        utility = 0
+        for i in range(len(self.agents)):
+            utility += weights[i] * self.agents[i].evaluate(state)
+
+        return utility
+    
+    # How much to weigh the evaluation functions for each agent in a given round
+    def get_weights(self, num_disks: int) -> List[int]:
+        return [1 for _ in self.agents]
+    
+    def __str__(self) -> str:
+        return "Composite"
+        
+
+# Agent that wins every single time
+class SuperiorAgent(CompositeAgent):
+    def __init__(self):
+        super().__init__([MobilityAgent(), PositionalAgent(), MostDisksAgent()])
+    
+    def get_weights(self, num_disks: int) -> List[int]:
+        return [64 - num_disks, 64 - abs(num_disks - 32), num_disks]
+    
+    def __str__(self) -> str:
+        return "Superior"
