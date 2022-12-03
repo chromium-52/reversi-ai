@@ -6,6 +6,7 @@ from typing import List, Union
 from constants import NO_MOVE, QUIT_GAME
 from model import Coordinate, State
 
+
 # An interface for Reversi AI agents
 # All implementing evaluation functions only evaluate for black
 class Agent:
@@ -37,13 +38,75 @@ class Agent:
     # This agent's evaluation function
     def evaluate(self, state: State) -> int:
         return 0
-    
+
     # Breaks ties between actions that lead to states with the same utility
     def tiebreaker(self, actions: List[Coordinate]) -> Coordinate:
         return random.choice(actions)
-    
+
     def __str__(self) -> str:
         return "Random"
+
+
+# Agent that values moves that result in more disks that cannot be flipped for the rest of the game
+class StabilityAgent(Agent):
+    def evaluate(self, state: State) -> int:
+        stable_disks_array = [[]]
+        # populate stable disks array with false values
+        for i in range(len(state.board)):
+            stable_disks_array.append([])
+            for j in range(len(state.board[i])):
+                stable_disks_array[i].append(False)
+        # mark the corners as stable if they are occupied by black
+        if state.board[0][0] == State.BLACK:
+            stable_disks_array[0][0] = True
+        if state.board[0][7] == State.BLACK:
+            stable_disks_array[0][7] = True
+        if state.board[7][0] == State.BLACK:
+            stable_disks_array[7][0] = True
+        if state.board[7][7] == State.BLACK:
+            stable_disks_array[7][7] = True
+        # mark any square that is black and has a stable neighbor as stable, and repeat until no more squares are marked
+        stable_disks = 0
+        while True:
+            marked = False
+            for i in range(len(state.board)):
+                for j in range(len(state.board[i])):
+                    if state.board[i][j] == State.BLACK:
+                        if i > 0 and stable_disks_array[i - 1][j]:
+                            stable_disks_array[i][j] = True
+                            marked = True
+                        if i < 7 and stable_disks_array[i + 1][j]:
+                            stable_disks_array[i][j] = True
+                            marked = True
+                        if j > 0 and stable_disks_array[i][j - 1]:
+                            stable_disks_array[i][j] = True
+                            marked = True
+                        if j < 7 and stable_disks_array[i][j + 1]:
+                            stable_disks_array[i][j] = True
+                            marked = True
+            if not marked:
+                break
+        # count the number of stable disks
+        for i in range(len(state.board)):
+            for j in range(len(state.board[i])):
+                if stable_disks_array[i][j]:
+                    stable_disks += 1
+        return stable_disks
+
+    def __str__(self) -> str:
+        return "Stability"
+
+
+# Agent that weights moves that are farther away from the center of the board as more valuable
+class RadiusAgent(Agent):
+    def tiebreaker(self, actions: List[Coordinate]) -> Coordinate:
+        radii = []
+        for action in actions:
+            radii.append((action[0] - 3.5) ** 2 + (action[1] - 3.5) ** 2)
+        return random.choices(actions, weights=radii)
+
+    def __str__(self) -> str:
+        return "Radius"
 
 
 # Agent that gets a move from the user
@@ -57,11 +120,11 @@ class ManualAgent(Agent):
             event = events[0]
             if event.type == pygame.WINDOWCLOSE:
                 return QUIT_GAME
-            
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 position = pygame.mouse.get_pos()
                 return State.get_coordinate_from_position(position)
-            
+
             return NO_MOVE
 
         move = (-1, -1)
@@ -78,7 +141,7 @@ class ManualAgent(Agent):
             print()
 
         return move
-    
+
     def __str__(self) -> str:
         return "Manual"
 
@@ -87,7 +150,7 @@ class ManualAgent(Agent):
 class MostDisksAgent(Agent):
     def evaluate(self, state: State) -> int:
         return state.black_disks() - state.white_disks()
-    
+
     def __str__(self) -> str:
         return "Most Disks"
 
@@ -99,7 +162,7 @@ class MobilityAgent(Agent):
             return len(state.valid_moves())
         if state.turn() == State.WHITE:
             return -len(state.valid_moves)
-    
+
     def __str__(self) -> str:
         return "Mobility"
 
@@ -109,34 +172,34 @@ class PositionalAgent(Agent):
     # position weights
 
     # https://www.sciencedirect.com/science/article/pii/S0305054806002553
-    ONE = [[100, -20, 10,  5,  5, 10, -20, 100],
+    ONE = [[100, -20, 10, 5, 5, 10, -20, 100],
            [-20, -50, -2, -2, -2, -2, -50, -20],
-           [ 10,  -2, -1, -1, -1, -1,  -2,  10],
-           [  5,  -2, -1, -1, -1, -1,  -2,   5],
-           [  5,  -2, -1, -1, -1, -1,  -2,   5],
-           [ 10,  -2, -1, -1, -1, -1,  -2,  10],
+           [10, -2, -1, -1, -1, -1, -2, 10],
+           [5, -2, -1, -1, -1, -1, -2, 5],
+           [5, -2, -1, -1, -1, -1, -2, 5],
+           [10, -2, -1, -1, -1, -1, -2, 10],
            [-20, -50, -2, -2, -2, -2, -50, -20],
-           [100, -20, 10,  5,  5, 10, -20, 100]]
-    
+           [100, -20, 10, 5, 5, 10, -20, 100]]
+
     # https://www.ai.rug.nl/~mwiering/GROUP/ARTICLES/paper-othello.pdf
-    TWO = [[100, -25, 10,  5,  5, 10, -25, 100],
-           [-25, -25,  2,  2,  2,  2, -25, -25],
-           [ 10,   2,  5,  1,  1,  5,   2,  10],
-           [  5,   2,  1,  2,  2,  1,   2,   5],
-           [  5,   2,  1,  2,  2,  1,   2,   5],
-           [ 10,   2,  5,  1,  1,  5,   2,  10],
-           [-25, -25,  2,  2,  2,  2, -25, -25],
-           [100, -25, 10,  5,  5, 10, -25, 100]]
+    TWO = [[100, -25, 10, 5, 5, 10, -25, 100],
+           [-25, -25, 2, 2, 2, 2, -25, -25],
+           [10, 2, 5, 1, 1, 5, 2, 10],
+           [5, 2, 1, 2, 2, 1, 2, 5],
+           [5, 2, 1, 2, 2, 1, 2, 5],
+           [10, 2, 5, 1, 1, 5, 2, 10],
+           [-25, -25, 2, 2, 2, 2, -25, -25],
+           [100, -25, 10, 5, 5, 10, -25, 100]]
 
     # https://www.ai.rug.nl/~mwiering/GROUP/ARTICLES/paper-othello.pdf    
-    THREE = [[ 80, -26,  24, -1,  -5,  28, -18,  76],
-             [-23, -39, -18, -9,  -6,  -8, -39,  -1],
-             [ 46, -16,   4,  1,  -3,   6, -20,  52],
-             [-13,  -5,   2, -1,   4,   3, -12,  -2],
-             [ -5,  -6,   1, -2,  -3,   0,  -9,  -5],
-             [ 48, -13,  12,  5,   0,   5, -24,  41],
+    THREE = [[80, -26, 24, -1, -5, 28, -18, 76],
+             [-23, -39, -18, -9, -6, -8, -39, -1],
+             [46, -16, 4, 1, -3, 6, -20, 52],
+             [-13, -5, 2, -1, 4, 3, -12, -2],
+             [-5, -6, 1, -2, -3, 0, -9, -5],
+             [48, -13, 12, 5, 0, 5, -24, 41],
              [-27, -53, -11, -1, -11, -16, -58, -15],
-             [ 87, -25,  27, -1,   5,  36,  -3, 100]]
+             [87, -25, 27, -1, 5, 36, -3, 100]]
 
     WEIGHTS = [ONE, TWO, THREE]
 
@@ -153,8 +216,8 @@ class PositionalAgent(Agent):
                     utility += self.weights[row][col]
                 if state.board[row][col] == State.WHITE:
                     utility -= self.weights[row][col]
-        
+
         return utility
-    
+
     def __str__(self) -> str:
         return "Positional"
