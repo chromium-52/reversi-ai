@@ -161,8 +161,8 @@ class MobilityAgent(Agent):
         if state.turn() == State.BLACK:
             return len(state.valid_moves())
         if state.turn() == State.WHITE:
-            return -len(state.valid_moves)
-
+            return -len(state.valid_moves())
+    
     def __str__(self) -> str:
         return "Mobility"
 
