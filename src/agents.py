@@ -84,15 +84,9 @@ class StabilityAgent(Agent):
                             stable = True
             if not stable:
                 break
-        # count the number of stable disks and subtract the number of stable disks that are white
-        stable_disks = 0
-        for i in range(len(state.board)):
-            for j in range(len(state.board[i])):
-                if stable_disks_array[i][j]:
-                    stable_disks += 1
-        return stable_disks
 
         # count the number of stable disks
+        stable_disks = 0
         for i in range(len(state.board)):
             for j in range(len(state.board[i])):
                 if stable_disks_array[i][j]:
