@@ -9,7 +9,7 @@ from minimax import MinimaxAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
 
-AGENT_CHOICES_MAP = {
+AGENT_CHOICES = {
     'manual': ManualAgent,
     'random': Agent,
     'most_disks': MostDisksAgent,
@@ -18,8 +18,6 @@ AGENT_CHOICES_MAP = {
     'stability': StabilityAgent,
     'radius': RadiusAgent,
     'superior': SuperiorAgent,
-
-    'minimax': MinimaxAgent,
 }
 
 class Main:
@@ -150,31 +148,29 @@ class Main:
         return winner
 
     @staticmethod
-    def get_agents(black_agent_type: List[str], white_agent_type: List[str]) -> Tuple[Agent]:
-        return Main.get_agent(black_agent_type), Main.get_agent(white_agent_type)
+    def get_agents(black_agent_args: List[str], white_agent_args: List[str]) -> Tuple[Agent]:
+        return Main.get_agent(black_agent_args), Main.get_agent(white_agent_args)
 
     @staticmethod
-    def get_agent(agent_type: List[str]) -> Agent:
-        agent = AGENT_CHOICES_MAP[(agent_type[0])]
-        if agent_type[0] == 'minimax':
-            if agent_type[1] == 'positional':
-                return agent(AGENT_CHOICES_MAP[agent_type[1]](int(agent_type[2]) - 1), int(agent_type[3]))
-            return agent(AGENT_CHOICES_MAP[agent_type[1]](), int(agent_type[2]))
-        if agent_type[0] == 'positional':
-            return agent(int(agent_type[1]) - 1)
-        return agent()
+    def get_agent(agent_args: List[str]) -> Agent:
+        if agent_args[0] == 'minimax':
+            return MinimaxAgent(AGENT_CHOICES[agent_args[1]](), int(agent_args[2]))
+        
+        return AGENT_CHOICES[(agent_args[0])]()
 
 # Allows the user to play a complete game of Reversi through standard in/out
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog = 'Reversi AI')
-    parser.add_argument('-b', '--black', nargs='+', required=True)
-    parser.add_argument('-w', '--white', nargs='+', required=True)
-    parser.add_argument('-r', '--repeat', type=int, default=1)
+    parser.add_argument('-b', '--black', nargs = '+', required = True)
+    parser.add_argument('-w', '--white', nargs = '+', required = True)
+    parser.add_argument('-r', '--repeat', type = int, default = 1)
     parser.add_argument('-i', '--interactive', action = 'store_true')
     parser.add_argument('-s', '--slow', action = 'store_true')
 
     args = parser.parse_args()
+
     black_agent, white_agent = Main.get_agents(args.black, args.white)
+
     main = Main(black_agent, white_agent, args.repeat, args.slow)
 
     main.run_game(args.interactive)
