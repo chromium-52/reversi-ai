@@ -65,28 +65,28 @@ class StabilityAgent(Agent):
             stable_disks_array[7][0] = True
         if state.board[7][7] == State.BLACK:
             stable_disks_array[7][7] = True
-        # mark any square that is black and has a stable neighbor as stable, and repeat until no more squares are marked
-        stable_disks = 0
+        # mark any square that is black and has a line of stable disks to a stable corner as stable, and repeat until
+        # no more squares are marked
         while True:
-            marked = False
+            stable = False
             for i in range(len(state.board)):
                 for j in range(len(state.board[i])):
+                    if stable_disks_array[i][j]:
+                        continue
                     if state.board[i][j] == State.BLACK:
-                        if i > 0 and stable_disks_array[i - 1][j]:
+                        if ((i == 0 and (stable_disks_array[i][j + 1] or stable_disks_array[i][j - 1])) or
+                                (i == 7 and (stable_disks_array[i][j + 1] or stable_disks_array[i][j - 1])) or
+                                (j == 0 and (stable_disks_array[i + 1][j] or stable_disks_array[i - 1][j])) or
+                                (j == 7 and (stable_disks_array[i + 1][j] or stable_disks_array[i - 1][j])) or
+                                ((i != 0 and i != 7) and stable_disks_array[i + 1][j] and stable_disks_array[i - 1][j]) or
+                                ((j != 0 and j != 7) and stable_disks_array[i][j + 1] and stable_disks_array[i][j - 1])):
                             stable_disks_array[i][j] = True
-                            marked = True
-                        if i < 7 and stable_disks_array[i + 1][j]:
-                            stable_disks_array[i][j] = True
-                            marked = True
-                        if j > 0 and stable_disks_array[i][j - 1]:
-                            stable_disks_array[i][j] = True
-                            marked = True
-                        if j < 7 and stable_disks_array[i][j + 1]:
-                            stable_disks_array[i][j] = True
-                            marked = True
-            if not marked:
+                            stable = True
+            if not stable:
                 break
+
         # count the number of stable disks
+        stable_disks = 0
         for i in range(len(state.board)):
             for j in range(len(state.board[i])):
                 if stable_disks_array[i][j]:
@@ -162,7 +162,7 @@ class MobilityAgent(Agent):
             return len(state.valid_moves())
         if state.turn() == State.WHITE:
             return -len(state.valid_moves())
-    
+
     def __str__(self) -> str:
         return "Mobility"
 
