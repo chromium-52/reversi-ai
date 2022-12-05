@@ -62,10 +62,10 @@ class State:
         return (self.black_disks() + self.white_disks()) % 2 + 1
     
     # Places the disk on the board if the move is valid and returns the resulting state
-    # If the move is not valid, the current state is returned
+    # If the move is not valid, raises an error
     def place_disk(self, action: Coordinate) -> "State":
         if not self.is_valid_move(action):
-            return self
+            raise ValueError("Invalid move given")
         
         turn = self.turn()
         
@@ -90,7 +90,16 @@ class State:
                 new_column += column_delta
 
         return State(board, window=self.window)
-    
+
+    # Remove the disk placed in the given coordinate, if it exists, and return the new state
+    def unplace_disk(self, action: Coordinate) -> "State":
+        board = [[self.board[row][col] for col in range(State.SIZE)] for row in range(State.SIZE)]
+
+        row_index, col_index = action
+        board[row_index][col_index] = 0
+
+        return State(board)
+
     # Returns false if the move requested is not valid
     def is_valid_move(self, action: Coordinate) -> bool:
         row, column = action
@@ -165,6 +174,15 @@ class State:
     # Returns true if the game is over
     def game_over(self) -> bool:
         return len(self.valid_moves()) == 0
+
+    # Determine if the disk in the given coordinate is vulnerable (can be flipped by the opponent)
+    def is_disk_vulnerable(self, coord: Coordinate) -> bool:
+        row_index, col_index = coord
+        disk_value = self.board[row_index][col_index]
+        if disk_value == 0:
+            return False
+        # TODO
+        return False
 
     # Returns the integer representation of the player who is winning
     # Returns 0 if the game is tied

@@ -5,6 +5,7 @@ from time import sleep
 from typing import List, Tuple
 
 from agents import Agent, ManualAgent, MobilityAgent, MostDisksAgent, PositionalAgent, StabilityAgent, RadiusAgent, SuperiorAgent
+from deepLearningAgents import NeuralNetworkAgent
 from minimax import MinimaxAgent
 from constants import WINDOW_HEIGHT, WINDOW_WIDTH, NO_MOVE, QUIT_GAME
 from model import State
@@ -17,6 +18,7 @@ AGENT_CHOICES = {
     'positional': PositionalAgent,
     'stability': StabilityAgent,
     'radius': RadiusAgent,
+    'neural': NeuralNetworkAgent,
     'superior': SuperiorAgent,
 }
 
