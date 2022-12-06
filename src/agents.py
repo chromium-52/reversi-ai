@@ -12,7 +12,7 @@ from model import Coordinate, State
 class Agent:
     # Returns the best action for this state based on the agent's evaluation function 
     def get_action(self, state: State) -> Coordinate:
-        best_actions = [None]
+        best_actions = []
 
         if state.turn() == State.BLACK:
             max_utility = -math.inf
@@ -32,6 +32,12 @@ class Agent:
                 if utility < min_utility:
                     min_utility = utility
                     best_actions = [action]
+        
+        if len(best_actions) == 0:
+            return None
+        
+        if len(best_actions) == 1:
+            return best_actions[0]
 
         return self.tiebreaker(best_actions)
 
