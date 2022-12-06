@@ -39,6 +39,12 @@ class Agent:
         if len(best_actions) == 1:
             return best_actions[0]
 
+        if len(best_actions) == 0:
+            return None
+        
+        if len(best_actions) == 1:
+            return best_actions[0]
+        
         return self.tiebreaker(best_actions)
 
     # This agent's evaluation function
