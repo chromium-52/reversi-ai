@@ -105,7 +105,8 @@ class RadiusAgent(Agent):
         radii = []
         for action in actions:
             radii.append((action[0] - 3.5) ** 2 + (action[1] - 3.5) ** 2)
-        return random.choices(actions, weights=radii)
+        
+        return random.choices(actions, weights = radii)
 
     def __str__(self) -> str:
         return "Radius"
