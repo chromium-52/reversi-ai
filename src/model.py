@@ -10,7 +10,7 @@ class State:
     # The standard row and column dimension of a Reversi board
     SIZE = 8
 
-    # Integer representations for each individual board cell state
+    # Integer representations for individual board cell states
     EMPTY = 0
     BLACK = 1
     WHITE = 2
