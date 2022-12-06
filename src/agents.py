@@ -48,50 +48,46 @@ class Agent:
 
 
 # Agent that values moves that result in more disks that cannot be flipped for the rest of the game
+# Doesn't work, but does something similar
 class StabilityAgent(Agent):
     def evaluate(self, state: State) -> int:
-        stable_disks_array = [[]]
-        # populate stable disks array with false values
-        for i in range(len(state.board)):
-            stable_disks_array.append([])
-            for j in range(len(state.board[i])):
-                stable_disks_array[i].append(False)
-        # mark the corners as stable if they are occupied by black
-        if state.board[0][0] == State.BLACK:
-            stable_disks_array[0][0] = True
-        if state.board[0][7] == State.BLACK:
-            stable_disks_array[0][7] = True
-        if state.board[7][0] == State.BLACK:
-            stable_disks_array[7][0] = True
-        if state.board[7][7] == State.BLACK:
-            stable_disks_array[7][7] = True
-        # mark any square that is black and has a line of stable disks to a stable corner as stable, and repeat until
-        # no more squares are marked
-        while True:
-            stable = False
-            for i in range(len(state.board)):
-                for j in range(len(state.board[i])):
-                    if stable_disks_array[i][j]:
-                        continue
-                    if state.board[i][j] == State.BLACK:
-                        if ((i == 0 and (stable_disks_array[i][j + 1] or stable_disks_array[i][j - 1])) or
-                                (i == 7 and (stable_disks_array[i][j + 1] or stable_disks_array[i][j - 1])) or
-                                (j == 0 and (stable_disks_array[i + 1][j] or stable_disks_array[i - 1][j])) or
-                                (j == 7 and (stable_disks_array[i + 1][j] or stable_disks_array[i - 1][j])) or
-                                ((i != 0 and i != 7) and stable_disks_array[i + 1][j] and stable_disks_array[i - 1][j]) or
-                                ((j != 0 and j != 7) and stable_disks_array[i][j + 1] and stable_disks_array[i][j - 1])):
-                            stable_disks_array[i][j] = True
-                            stable = True
-            if not stable:
-                break
-
-        # count the number of stable disks
-        stable_disks = 0
-        for i in range(len(state.board)):
-            for j in range(len(state.board[i])):
-                if stable_disks_array[i][j]:
-                    stable_disks += 1
-        return stable_disks
+        stable = self.evaluate_corner(state, True, True)
+        stable += self.evaluate_corner(state, True, False)
+        stable += self.evaluate_corner(state, False, True)
+        stable += self.evaluate_corner(state, False, False)
+        return stable
+    
+    def evaluate_corner(self, state: State, upper: bool, left: bool) -> int:
+        stable = self.evaluate_corner_color(state, upper, left, True)
+        stable += self.evaluate_corner_color(state, upper, left, False)
+        return stable
+        
+    def evaluate_corner_color(self, state: State, upper: bool, left: bool, black: bool) -> int:
+        stable = 0
+        row = 0 if upper else State.SIZE - 1
+        col = 0 if left else State.SIZE - 1
+        if (black and state.board[row][col] == State.BLACK) or (not black and state.board[row][col] == State.WHITE):
+            # Corner disk is stable
+            stable = stable + 1 if black else stable - 1
+            # Traverse through row until you find a non-stable disk
+            col = col + 1 if left else col - 1
+            while (black and state.board[row][col] == State.BLACK) or (not black and state.board[row][col] == State.WHITE):
+                stable = stable + 1 if black else stable - 1
+                col = col + 1 if left else col - 1
+            scope = col - 1 if left else col + 1
+            # Traverse through subsequent rows until you find a row where the first disk is non-stable
+            row = row + 1 if upper else row - 1
+            col = 0 if left else State.SIZE - 1
+            while (black and state.board[row][col] == State.BLACK) or (not black and state.board[row][col] == State.WHITE):
+                stable = stable + 1 if black else stable - 1
+                col = col + 1 if left else col - 1
+                while ((black and state.board[row][col] == State.BLACK) or (not black and state.board[row][col] == State.WHITE)) and ((left and col <= scope) or (not left and col >= scope)):
+                    stable = stable + 1 if black else stable - 1
+                    col = col + 1 if left else col - 1
+                scope = col - 1 if left else col + 1
+                row = row + 1 if upper else row - 1
+                col = 0 if left else State.SIZE - 1
+        return stable
 
     def __str__(self) -> str:
         return "Stability"
