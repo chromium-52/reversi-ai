@@ -205,6 +205,8 @@ class StabilityAgent(Agent):
             while (black and state.board[row][col] == State.BLACK) or (not black and state.board[row][col] == State.WHITE):
                 stable = stable + 1 if black else stable - 1
                 col = col + 1 if left else col - 1
+                if (left and col == State.SIZE - 2) or (not left and col == 1):
+                        break
             scope = col - 1 if left else col + 1
             # Traverse through subsequent rows until you find a row where the first disk is non-stable
             row = row + 1 if upper else row - 1
@@ -215,9 +217,13 @@ class StabilityAgent(Agent):
                 while ((black and state.board[row][col] == State.BLACK) or (not black and state.board[row][col] == State.WHITE)) and ((left and col <= scope) or (not left and col >= scope)):
                     stable = stable + 1 if black else stable - 1
                     col = col + 1 if left else col - 1
+                    if (left and col == State.SIZE - 2) or (not left and col == 1):
+                        break
                 scope = col - 1 if left else col + 1
                 row = row + 1 if upper else row - 1
                 col = 0 if left else State.SIZE - 1
+                if (upper and row == State.SIZE - 2) or (not upper and row == 1):
+                        break
         return stable
 
     def __str__(self) -> str:
