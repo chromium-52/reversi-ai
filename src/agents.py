@@ -188,16 +188,10 @@ class SuperiorAgent(CompositeAgent):
 # Doesn't work, but does something similar
 class StabilityAgent(Agent):
     def evaluate(self, state: State) -> int:
-        stable = self.evaluate_corner(state, True, True)
-        stable += self.evaluate_corner(state, True, False)
-        stable += self.evaluate_corner(state, False, True)
-        stable += self.evaluate_corner(state, False, False)
-        return stable
+        return self.evaluate_corner(state, True, True) + self.evaluate_corner(state, True, False) + self.evaluate_corner(state, False, True) + self.evaluate_corner(state, False, False)
     
     def evaluate_corner(self, state: State, upper: bool, left: bool) -> int:
-        stable = self.evaluate_corner_color(state, upper, left, True)
-        stable += self.evaluate_corner_color(state, upper, left, False)
-        return stable
+        return self.evaluate_corner_color(state, upper, left, True) + self.evaluate_corner_color(state, upper, left, False)
         
     def evaluate_corner_color(self, state: State, upper: bool, left: bool, black: bool) -> int:
         stable = 0
