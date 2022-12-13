@@ -12,15 +12,15 @@ Run `pip install pygame==2.1.2` or `pip install -r requirements.txt` from the ro
 
 The available agents are:
 
-- manual: the player manually chooses each move
-- random: randomly select a move from the list of possible moves
-- most_disks: select a move resulting in flipping the most number of the opponent's disks
-- mobility: select a move that maximizes the number of moves for the player
-- positional: select a move based on a grid of weights, with moves with higher total values more likely to be selected
-- stability: select a move that maximizes the number of immovable disks on the board
-- radius: randomly select a move, weighted by distance from center of board (moves farther away from the center of the board are more likely to be selected)
-- superior: acts similar to a mobility agent in the beginning phase of the game and switches first to a positional agent, thena a most disks agent based on the number of disks on the board
-- neural: uses a convolutional neural network using TensorFlow to output the optimal move from the given game state
+- `manual`: the player manually chooses each move
+- `random`: randomly select a move from the list of possible moves
+- `most_disks`: select a move resulting in flipping the most number of the opponent's disks
+- `mobility`: select a move that maximizes the number of moves for the player
+- `positional`: select a move based on a grid of weights, with moves with higher total values more likely to be selected
+- `stability`: select a move that maximizes the number of immovable disks on the board
+- `radius`: randomly select a move, weighted by distance from center of board (moves farther away from the center of the board are more likely to be selected)
+- `superior`: acts similar to a mobility agent in the beginning phase of the game and switches first to a positional agent, thena a most disks agent based on the number of disks on the board
+- `neural`: uses a convolutional neural network using TensorFlow to output the optimal move from the given game state
 
 ### Options
 
