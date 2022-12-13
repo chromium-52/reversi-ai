@@ -4,7 +4,7 @@ Final project for CS4100: Artificial Intelligence. Contains code for various AI 
 
 ## Setup
 
-Run `pip install pygame==2.1.2`.
+Run `pip install pygame==2.1.2` or `pip install -r requirements.txt` from the root directory.
 
 ## Usage
 
