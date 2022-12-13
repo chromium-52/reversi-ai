@@ -39,7 +39,7 @@ class Main:
         start_time = time.time()
         for i in range(self.num_repeat):
             if i % 10 == 0:
-                print(f'Round {i}')
+                print(f'Round {i} - {num_wins_black} - {num_wins_white} - {num_ties}')
 
             if is_interactive:
                 winner = self.run_game_gui()
@@ -127,7 +127,7 @@ class Main:
 
             state = state.place_disk(move)
             state.repaint()
-            sleep(1)
+            sleep(2)
         
         return self.end_game_gui(state)
         

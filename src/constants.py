@@ -1,6 +1,6 @@
 # Window constants
-WINDOW_WIDTH = 400
-WINDOW_HEIGHT = 400
+WINDOW_WIDTH = 600
+WINDOW_HEIGHT = 600
 
 # Color constants
 BLACK = (0, 0, 0)

@@ -26,8 +26,9 @@ class State:
                [0, 0, 0, 0, 0, 0, 0, 0]]
 
     # GUI elements
-    CELL_SIZE = 50
+    CELL_SIZE = WINDOW_HEIGHT // SIZE
     PADDING = 10
+    VALID_MOVE_DOT_SIZE = CELL_SIZE / 10
 
     # Creates a new Reversi game state
     # If board is None, creates a board for a new game
@@ -266,4 +267,4 @@ class State:
 
     def __repaint_valid_moves(self, valid_moves: List[Coordinate]) -> None:
         for row_index, col_index in valid_moves:
-            pygame.draw.circle(self.window, RED, State.get_position_from_coordinate(row_index, col_index), 5)
+            pygame.draw.circle(self.window, RED, State.get_position_from_coordinate(row_index, col_index), self.VALID_MOVE_DOT_SIZE)
