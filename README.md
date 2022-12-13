@@ -1,6 +1,10 @@
 # reversi-ai
 
-First, run `pip install pygame` in the command line to install `pygame`.
+Final project for CS4100: Artificial Intelligence. Contains code for various AI agents that use the minimax algorithm with alpha-beta pruning and a neural network to play a game of Reversi.
+
+## Setup
+
+Run `pip install pygame`.
 
 ## Usage
 
