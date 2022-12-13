@@ -39,4 +39,4 @@ Additional options:
 
 ### Example
 
-For example, `python src/main.py`, `python src/main.py -b most_disks -w minimax random 3`
+For example, `python src/main.py -b most_disks -w minimax random 3 -i` or `python src/main.py -b stability -w superior -r 100`
